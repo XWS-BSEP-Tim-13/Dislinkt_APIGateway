@@ -1,12 +1,15 @@
 package startup
 
 import (
+	"context"
 	//"context"
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	// "github.com/tamararankovic/microservices_demo/api_gateway/infrastructure/api"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
-	//catalogueGw "github.com/tamararankovic/microservices_demo/common/proto/catalogue_service"
+	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	//inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
 	//orderingGw "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
 	//shippingGw "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
@@ -32,13 +35,13 @@ func NewServer(config *cfg.Config) *Server {
 }
 
 func (server *Server) initHandlers() {
-	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	//catalogueEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	//err := catalogueGw.RegisterCatalogueServiceHandlerFromEndpoint(context.TODO(), server.mux, catalogueEmdpoint, opts)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	companyEndpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
+	err := companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+	//orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
 	//err = orderingGw.RegisterOrderingServiceHandlerFromEndpoint(context.TODO(), server.mux, orderingEmdpoint, opts)
 	//if err != nil {
 	//	panic(err)
