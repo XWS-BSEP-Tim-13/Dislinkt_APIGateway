@@ -33,22 +33,22 @@ func NewServer(config *cfg.Config) *Server {
 
 func (server *Server) initHandlers() {
 	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	//catalogueEmdpoint := fmt.Sprintf("%s:%s", server.config.CatalogueHost, server.config.CataloguePort)
+	//catalogueEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	//err := catalogueGw.RegisterCatalogueServiceHandlerFromEndpoint(context.TODO(), server.mux, catalogueEmdpoint, opts)
 	//if err != nil {
 	//	panic(err)
 	//}
-	//orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
+	//orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	//err = orderingGw.RegisterOrderingServiceHandlerFromEndpoint(context.TODO(), server.mux, orderingEmdpoint, opts)
 	//if err != nil {
 	//	panic(err)
 	//}
-	//shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
+	//shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
 	//err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
 	//if err != nil {
 	//	panic(err)
 	//}
-	//inventoryEmdpoint := fmt.Sprintf("%s:%s", server.config.InventoryHost, server.config.InventoryPort)
+	//inventoryEmdpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
 	//err = inventoryGw.RegisterInventoryServiceHandlerFromEndpoint(context.TODO(), server.mux, inventoryEmdpoint, opts)
 	//if err != nil {
 	//	panic(err)
