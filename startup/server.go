@@ -10,6 +10,7 @@ import (
 
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
+	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	//inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
 	//orderingGw "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
 	//shippingGw "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
@@ -36,16 +37,16 @@ func NewServer(config *cfg.Config) *Server {
 
 func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	companyEndpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	err := companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
-	//orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
-	//err = orderingGw.RegisterOrderingServiceHandlerFromEndpoint(context.TODO(), server.mux, orderingEmdpoint, opts)
-	//if err != nil {
-	//	panic(err)
-	//}
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
 	//shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
 	//err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
 	//if err != nil {
