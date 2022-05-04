@@ -1,8 +1,8 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.1 h1:wr9vPO3HxSkKr1OySThj833PvSuABI3rCp2RU1jUeOo=
-github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.1/go.mod h1:bYl/qAz56jSKkNVtYBaIFdu9YpRnoYKjexOUGdPGiBQ=
+github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2 h1:bTXsachisPXoUe8Q1Yk3Wn8uejq7gV0Jg4lS9xI1bA0=
+github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2/go.mod h1:bYl/qAz56jSKkNVtYBaIFdu9YpRnoYKjexOUGdPGiBQ=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.3 h1:rixEL8CEQ60VTlAByvmkrQVR+Q8u/u2fpn9KSrmM3qM=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.3/go.mod h1:ToIw8rTHV+fIHHu+NgwqtGqko9uLMlBYGCYyCWPc7iA=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.2 h1:0q8sRin5Z5vOJ/sql/eUOtaF1PXJeRmFh1wVRq7JG4I=

@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.1
+	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.3
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.2
 )
