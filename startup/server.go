@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
+	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	//inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
@@ -37,16 +38,25 @@ func NewServer(config *cfg.Config) *Server {
 
 func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	err := companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+
+	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+
 	//shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
 	//err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
 	//if err != nil {

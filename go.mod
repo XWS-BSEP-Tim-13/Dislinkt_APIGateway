@@ -4,10 +4,11 @@ go 1.18
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
-	google.golang.org/grpc v1.45.0
+	google.golang.org/grpc v1.46.0
 )
 
 require (
+	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.1
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.3
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.2
 )
