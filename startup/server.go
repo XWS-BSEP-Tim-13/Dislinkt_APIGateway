@@ -4,15 +4,15 @@ import (
 	"context"
 	//"context"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	//inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
 	//orderingGw "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
 	//shippingGw "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
@@ -77,7 +77,11 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
-
+	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	orderingHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
+	orderingHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
