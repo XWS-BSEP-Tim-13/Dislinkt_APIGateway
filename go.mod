@@ -11,6 +11,7 @@ require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.3
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.2
+	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.2
 )
 
 require (
@@ -19,6 +20,6 @@ require (
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f // indirect
-	google.golang.org/genproto v0.0.0-20220429170224-98d788798c3e // indirect
+	google.golang.org/genproto v0.0.0-20220504150022-98cd25cafc72 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 )
