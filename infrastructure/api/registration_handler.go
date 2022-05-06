@@ -6,11 +6,10 @@ import (
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
+	company "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
-	//user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"net/http"
 )
@@ -55,27 +54,45 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var user *user.NewUser
 	if !registerRequestJson.IsCompany {
 		registerUserRequestPb := mapRegisterUserRequestPb(registerRequestJson)
 
 		userClient := services.NewUserClient(handler.userClientAddress)
-		user, err = userClient.CreateUser(context.TODO(), registerUserRequestPb)
+		user, err := userClient.CreateUser(context.TODO(), registerUserRequestPb)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
 		}
-	}
 
-	response, err := json.Marshal(user)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("500 - Unable to register!"))
-		return
+		response, err := json.Marshal(user)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("500 - Unable to register!"))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	} else {
+		registerCompanyRequestPb := mapRegisterCompanyRequestPb(registerRequestJson)
+
+		companyClient := services.NewCompanyClient(handler.companyClientAddress)
+		newCompany, err := companyClient.CreateCompany(context.TODO(), registerCompanyRequestPb)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		response, err := json.Marshal(newCompany)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("500 - Unable to register!"))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
 }
 
 func mapRegisterAuthRequestPb(registerRequestJson *domain.RegisterRequest) *auth.RegisterRequest {
@@ -108,6 +125,21 @@ func mapRegisterUserRequestPb(registerRequestJson *domain.RegisterRequest) *user
 		},
 	}
 	return registerUserRequestPb
+}
+
+func mapRegisterCompanyRequestPb(registerRequestJson *domain.RegisterRequest) *company.NewCompany {
+	registerCompanyRequestPb := &company.NewCompany{
+		Company: &company.Company{
+			Username:    registerRequestJson.Username,
+			CompanyName: registerRequestJson.CompanyName,
+			Description: registerRequestJson.Description,
+			Location:    registerRequestJson.Location,
+			Website:     registerRequestJson.Website,
+			CompanySize: registerRequestJson.CompanySize,
+			Industry:    registerRequestJson.Industry,
+		},
+	}
+	return registerCompanyRequestPb
 }
 
 func decodeBodyToRegisterRequest(r io.Reader) (*domain.RegisterRequest, error) {

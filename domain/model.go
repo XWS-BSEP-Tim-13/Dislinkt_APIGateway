@@ -18,4 +18,10 @@ type RegisterRequest struct {
 	Biography   string      `json:"biography"`
 	IsPrivate   bool        `json:"is_private"`
 	IsCompany   bool        `json:"is_company"`
+	CompanyName string      `json:"company_name"`
+	Description string      `json:"description"`
+	Location    string      `json:"location"`
+	Website     string      `json:"website"`
+	CompanySize string      `json:"company_size"`
+	Industry    string      `json:"industry"`
 }
