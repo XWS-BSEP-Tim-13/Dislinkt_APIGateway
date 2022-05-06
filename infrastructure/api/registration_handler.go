@@ -109,6 +109,7 @@ func mapRegisterAuthRequestPb(registerRequestJson *domain.RegisterRequest) *auth
 func mapRegisterUserRequestPb(registerRequestJson *domain.RegisterRequest) *user.NewUser {
 	registerUserRequestPb := &user.NewUser{
 		User: &user.User{
+			Username:    registerRequestJson.Username,
 			FirstName:   registerRequestJson.FirstName,
 			LastName:    registerRequestJson.LastName,
 			Email:       registerRequestJson.Email,

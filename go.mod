@@ -11,7 +11,7 @@ require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.4
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.3
-	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.11
+	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.16
 	google.golang.org/protobuf v1.28.0
 )
 
@@ -20,6 +20,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.0.2 // indirect
