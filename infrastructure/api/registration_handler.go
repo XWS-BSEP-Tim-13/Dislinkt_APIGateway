@@ -6,6 +6,10 @@ import (
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
+	user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
+	//user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"io"
 	"net/http"
@@ -41,23 +45,30 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		return
 	}
 
-	registerRequestPb := &auth.RegisterRequest{
-		User: &auth.User{
-			Username: (*registerRequestJson).Username,
-			Password: (*registerRequestJson).Password,
-			Role:     (*registerRequestJson).Role,
-		},
-	}
+	registerAuthRequestPb := mapRegisterAuthRequestPb(registerRequestJson)
 
 	authClient := services.NewAuthClient(handler.authClientAddress)
-	username, err := authClient.Register(context.TODO(), registerRequestPb)
+	_, err = authClient.Register(context.TODO(), registerAuthRequestPb)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("500 - Unable to connect on auth service!"))
+		w.Write([]byte(err.Error()))
 		return
 	}
 
-	response, err := json.Marshal(username)
+	var user *user.NewUser
+	if !registerRequestJson.IsCompany {
+		registerUserRequestPb := mapRegisterUserRequestPb(registerRequestJson)
+
+		userClient := services.NewUserClient(handler.userClientAddress)
+		user, err = userClient.CreateUser(context.TODO(), registerUserRequestPb)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+	}
+
+	response, err := json.Marshal(user)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("500 - Unable to register!"))
@@ -65,6 +76,38 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
+}
+
+func mapRegisterAuthRequestPb(registerRequestJson *domain.RegisterRequest) *auth.RegisterRequest {
+	registerAuthRequestPb := &auth.RegisterRequest{
+		User: &auth.User{
+			Username: (*registerRequestJson).Username,
+			Password: (*registerRequestJson).Password,
+			Role:     (*registerRequestJson).Role,
+		},
+	}
+	return registerAuthRequestPb
+}
+
+func mapRegisterUserRequestPb(registerRequestJson *domain.RegisterRequest) *user.NewUser {
+	registerUserRequestPb := &user.NewUser{
+		User: &user.User{
+			FirstName:   registerRequestJson.FirstName,
+			LastName:    registerRequestJson.LastName,
+			Email:       registerRequestJson.Email,
+			PhoneNumber: registerRequestJson.PhoneNumber,
+			Gender:      user.User_Gender(registerRequestJson.Gender),
+			DateOfBirth: timestamppb.New(registerRequestJson.DateOfBirth),
+			Biography:   registerRequestJson.Biography,
+			IsPrivate:   registerRequestJson.IsPrivate,
+			Educations:  []*user.Education{},
+			Experiences: []*user.Experience{},
+			Skills:      []string{},
+			Interests:   []string{},
+			Connections: []string{},
+		},
+	}
+	return registerUserRequestPb
 }
 
 func decodeBodyToRegisterRequest(r io.Reader) (*domain.RegisterRequest, error) {
