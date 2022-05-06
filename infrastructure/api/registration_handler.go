@@ -3,10 +3,9 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"io"
 	"net/http"
@@ -27,15 +26,14 @@ func NewRegistrationHandler(authClientAddress, userClientAddress, companyClientA
 }
 
 func (handler *RegistrationHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("POST", "/registration", handler.GetDetails)
+	err := mux.HandlePath("POST", "/registration", handler.HandleRegister)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (handler *RegistrationHandler) GetDetails(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	registerRequestJson, err := decodeBodyToRegisterRequest(r.Body)
-	fmt.Println(registerRequestJson)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -43,12 +41,16 @@ func (handler *RegistrationHandler) GetDetails(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	//var registerRequestPb *auth.RegisterRequest
-	registerRequestPb := auth.RegisterRequest{}
-	jsonpb.Unmarshal(r.Body, &registerRequestPb)
-	
+	registerRequestPb := &auth.RegisterRequest{
+		User: &auth.User{
+			Username: (*registerRequestJson).Username,
+			Password: (*registerRequestJson).Password,
+			Role:     (*registerRequestJson).Role,
+		},
+	}
+
 	authClient := services.NewAuthClient(handler.authClientAddress)
-	username, err := authClient.Register(context.TODO(), &registerRequestPb)
+	username, err := authClient.Register(context.TODO(), registerRequestPb)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("500 - Unable to connect on auth service!"))
@@ -65,18 +67,12 @@ func (handler *RegistrationHandler) GetDetails(w http.ResponseWriter, r *http.Re
 	w.Write(response)
 }
 
-func decodeBodyToRegisterRequest(r io.Reader) (*User, error) {
+func decodeBodyToRegisterRequest(r io.Reader) (*domain.RegisterRequest, error) {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
-	var registerRequest User
+	var registerRequest domain.RegisterRequest
 	if err := dec.Decode(&registerRequest); err != nil {
 		return nil, err
 	}
 	return &registerRequest, nil
-}
-
-type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
 }
