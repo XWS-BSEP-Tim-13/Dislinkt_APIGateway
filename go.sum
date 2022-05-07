@@ -11,6 +11,8 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.7 h1:QuEIlf43Jis0fjpjSI2ZaX
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.7/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.8 h1:6b4G41axKgrvpMP1UXQRvHsOg37VGgEZ2f9IPUm5biU=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.8/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.9 h1:IWek2KGoySLmyUvHb86Xmp9PDKc2C0Et94eY+ryk9bk=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.9/go.mod h1:yUFI6LEEyP8WMq47N5pkUuzW5LvpJumP794EzmMO2a8=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.27 h1:vkfj185MJkRUMSguYkwnX9OPxvkzVaWH8gvPuU6Ys7o=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.27/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
