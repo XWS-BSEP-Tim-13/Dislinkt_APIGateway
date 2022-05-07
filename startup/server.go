@@ -2,24 +2,16 @@ package startup
 
 import (
 	"context"
-	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
-
-	//"context"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
-	//inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
-	//orderingGw "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	//shippingGw "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
-	//"google.golang.org/grpc"
-	//"google.golang.org/grpc/credentials/insecure"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 )
@@ -66,28 +58,21 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
-
-	//shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.CompanyHost, server.config.CompanyPort)
-	//err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//inventoryEmdpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	//err = inventoryGw.RegisterInventoryServiceHandlerFromEndpoint(context.TODO(), server.mux, inventoryEmdpoint, opts)
-	//if err != nil {
-	//	panic(err)
-	//}
 }
 
 func (server *Server) initCustomHandlers() {
+	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
+	registrationHandler.Init(server.mux)
+}
+
+func (server *Server) initUserPostsHandler() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint)
 	userPostsHandler.Init(server.mux)
-}
-
-func (server *Server) initUserPostsHandler() {
-
 }
 
 func (server *Server) Start() {
