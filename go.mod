@@ -11,7 +11,7 @@ require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.4
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.9
-	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.31
+	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.33
 	google.golang.org/protobuf v1.28.0
 )
 
