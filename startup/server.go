@@ -2,6 +2,8 @@ package startup
 
 import (
 	"context"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
+
 	//"context"
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -34,6 +36,7 @@ func NewServer(config *cfg.Config) *Server {
 	}
 	server.initHandlers()
 	server.initCustomHandlers()
+	server.initUserPostsHandler()
 	return server
 }
 
@@ -77,6 +80,13 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint)
+	userPostsHandler.Init(server.mux)
+}
+
+func (server *Server) initUserPostsHandler() {
 
 }
 
