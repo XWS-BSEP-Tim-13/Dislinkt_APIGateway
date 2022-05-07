@@ -11,6 +11,8 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.27 h1:vkfj185MJkRUMSguYkwnX
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.27/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.29 h1:aw+bBKeq2Dpi/00critp8jjsLPgz0TPuKpNmm5cgSwk=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.29/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
+github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.31 h1:/6Y7DioX+tWPPLwRjzC1OxtEewFy8GFH9uqKDBIvEDA=
+github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.31/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
