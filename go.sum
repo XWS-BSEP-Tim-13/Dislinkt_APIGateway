@@ -5,8 +5,8 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2 h1:bTXsachisPXo
 github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v0.0.2/go.mod h1:bYl/qAz56jSKkNVtYBaIFdu9YpRnoYKjexOUGdPGiBQ=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.4 h1:6njqsord+ww+sZlTD1SouiIrYDPHRftplJi7/YQwagM=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v0.0.4/go.mod h1:ToIw8rTHV+fIHHu+NgwqtGqko9uLMlBYGCYyCWPc7iA=
-github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.3 h1:0oiWOTnHfw3y8/Bdb3fF9q9Mdbr0OKRjf7MlhGk0SmE=
-github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.3/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.4 h1:MHMJGerV93FzNGcqQCoGYcERUU9OBdbM5wuYBetI1+Y=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.4/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.20 h1:4t/bldgqpgHUWAFXQ6mDtAP2b3KKEOJCzHc+kyOKj5s=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v0.0.20/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
