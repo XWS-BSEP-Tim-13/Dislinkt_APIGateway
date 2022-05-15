@@ -27,3 +27,13 @@ func decodePostDtoBody(r io.Reader) (*dom.PostDto, error) {
 	}
 	return &rt, nil
 }
+
+func decodeHomepageFeedBody(r io.Reader) (*dom.HomepageFeedDto, error) {
+	dec := json.NewDecoder(r)
+	dec.DisallowUnknownFields()
+	var rt dom.HomepageFeedDto
+	if err := dec.Decode(&rt); err != nil {
+		return nil, err
+	}
+	return &rt, nil
+}
