@@ -29,6 +29,7 @@ func NewServer(config *cfg.Config) *Server {
 	server.initHandlers()
 	server.initCustomHandlers()
 	server.initUserPostsHandler()
+	server.initHomepageFeedHandler()
 	return server
 }
 
@@ -72,6 +73,13 @@ func (server *Server) initUserPostsHandler() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint)
+	userPostsHandler.Init(server.mux)
+}
+
+func (server *Server) initHomepageFeedHandler() {
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	userPostsHandler := api.NewHomepageFeedHandler(userEndpoint, postEndpoint)
 	userPostsHandler.Init(server.mux)
 }
 

@@ -5,10 +5,10 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.0 h1:OftbkxiJTLcf
 github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.0/go.mod h1:G+zUciTnSSjVSwXJDBtECmY7lqtzcjRMGIrfeZfmDOI=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0 h1:1LdpgD+6Rkq6o3XUlJbkfkqQIqdWUZdiLc6lbneEfaU=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0/go.mod h1:xttahJQYo4vBgGgU4SnPeacM7vSDx1ec5RRI1Dai1D4=
-github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.10 h1:dyWKuRJBcBGXwqTJz8p8h8F4ylAfjg34HoGdNfKdFKM=
-github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.10/go.mod h1:yUFI6LEEyP8WMq47N5pkUuzW5LvpJumP794EzmMO2a8=
-github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.0 h1:GmecM/V0V6eXSsKkmTuQXFpfU435eWiL04jiOXHwvvM=
-github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.0/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12 h1:VIDcvf7sLvUliNHnnmOIj5SBERJaDkJK1CK5zvUfQd4=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
+github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1 h1:gPclLcUaAu/ZWexIfqYJZRzqjiHDe/uqDtcPnMBL4C4=
+github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
@@ -59,6 +59,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0/go.mod h1:XnLCLFp3tjoZJszVKjfp
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6LYCDYWNEvQ=
+github.com/rs/cors v1.8.2 h1:KCooALfAYGs415Cwu5ABvv9n9509fSiG5SQJn/AQo4U=
+github.com/rs/cors v1.8.2/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

@@ -10,8 +10,9 @@ require (
 require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.0
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0
-	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.10
-	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.0
+	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12
+	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1
+	github.com/rs/cors v1.8.2
 	google.golang.org/protobuf v1.28.0
 )
 
