@@ -32,8 +32,6 @@ func NewHomepageFeedHandler(usersClientAddress, postsClientAddress string) Handl
 }
 
 func (handler *HomepageFeedHandler) HomepageFeed(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
-	w.Header().Add("Access-Control-Allow-Methods", "POST, OPTIONS, GET, DELETE, PUT")
 	fmt.Println("Request started")
 	contentType := r.Header.Get("Content-Type")
 	mediatype, _, err := mime.ParseMediaType(contentType)
