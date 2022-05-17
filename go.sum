@@ -44,6 +44,16 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0 h1:1LdpgD+6Rkq6o3XUlJb
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0/go.mod h1:xttahJQYo4vBgGgU4SnPeacM7vSDx1ec5RRI1Dai1D4=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12 h1:VIDcvf7sLvUliNHnnmOIj5SBERJaDkJK1CK5zvUfQd4=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12/go.mod h1:E+lolJVfJ59+Ob5LOouEsJi33r9YXp5nuW/GERrlkY8=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.13 h1:PS0+bVSKqYhjJeaXeeMj+f1UKbeajpXMCrH5q1XrCIc=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.13/go.mod h1:SzEc/0VMKfOOGFEj7NpbuFzipiZ1zNlxLxJP7qxqVlU=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.14 h1:QCN/Xu+Xbys8FMAiB7ckD/ibMPd1Oa8bXd42hqY8Rc4=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.14/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.15 h1:+ci13OzO87LSHiCQpsq4Xf2KxviQwbRy5vaBB6ClAQE=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.15/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.18 h1:XjrbGDBZ3NMiiW/8vxV7dmrTlqhTnNQXsj0sSUvuabU=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.18/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19 h1:fVlApZI4CmkhpYkCtJtl3Q6yNMBcFSQT55uoAta+s8Y=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1 h1:gPclLcUaAu/ZWexIfqYJZRzqjiHDe/uqDtcPnMBL4C4=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=

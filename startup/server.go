@@ -30,6 +30,7 @@ func NewServer(config *cfg.Config) *Server {
 	server.initCustomHandlers()
 	server.initUserPostsHandler()
 	server.initHomepageFeedHandler()
+	server.initUploadImageHandler()
 	return server
 }
 
@@ -67,6 +68,12 @@ func (server *Server) initCustomHandlers() {
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
 	registrationHandler.Init(server.mux)
+}
+
+func (server *Server) initUploadImageHandler() {
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	uploadImageHandler := api.NewUploadImageHandler(postEndpoint)
+	uploadImageHandler.Init(server.mux)
 }
 
 func (server *Server) initUserPostsHandler() {

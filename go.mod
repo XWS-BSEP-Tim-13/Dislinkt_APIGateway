@@ -10,7 +10,7 @@ require (
 require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.0
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0
-	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.12
+	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19
 	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.1
 	github.com/spf13/viper v1.11.0
 	google.golang.org/protobuf v1.28.0
