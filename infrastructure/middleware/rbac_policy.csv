@@ -1,0 +1,24 @@
+p, ADMIN, /user/feed, *
+p, USER, /user/feed, *
+p, ADMIN, /user/get-posts, *
+
+p, USER, /post, *
+p, ADMIN, /post, *
+p, ANONYMOUS, /post, GET
+
+p, USER, /post/{postId}, *
+p, ADMIN, /post/{postId}, *
+p, ANONYMOUS, /post/{postId}, GET
+
+p, USER, /post/user/{username}, *
+p, ADMIN, /post/user/{username}, *
+p, ANONYMOUS, /post/user/{username}, GET
+
+p, USER, /post/react, POST
+
+p, USER, /post/{page}/feed, *
+p, ADMIN, /post/{page}/feed, *
+p, ANONYMOUS, /post/{page}/feed, POST
+
+p, USER, /post/{postId}/comment, POST
+p, USER, /post/upload-image, POST
