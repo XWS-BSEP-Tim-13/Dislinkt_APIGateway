@@ -1,0 +1,70 @@
+p, ADMIN, /user/*, *
+p, USER, /user/*, *
+p, ANONYMOUS, /user/*, GET
+
+p, ADMIN, /in/*, *
+p, USER, /in/*, *
+p, ANONYMOUS, /in/*, GET
+
+p, ADMIN, /user, GET
+
+p, ADMIN, /user/filter/*, *
+p, USER, /user/filter/*, *
+p, ANONYMOUS, /user/filter/*, GET
+
+p, ADMIN, /user/check-read-posts, POST
+p, USER, /user/check-read-posts, POST
+
+p, USER, /connection-request, POST
+p, USER, /connection-request/by-user/*, *
+p, USER, /connection-request/accept/*, *
+p, USER, /user/*, PUT
+
+p, USER, /user/experience, PUT
+p, USER, /user/education, PUT
+p, USER, /user/skill, PUT
+p, USER, /user/interest, PUT
+
+p, USER, /user/experience/delete, PUT
+p, USER, /user/education/delete, PUT
+p, USER, /user/removeSkill, PUT
+p, USER, /user/removeInterest, PUT
+
+p, USER, /connection-request/*, DELETE
+p, USER, /user/delete-connection, PUT
+p, USER, /user/user-connection-usernames/*, GET
+
+p, ADMIN, /user/feed, *
+p, USER, /user/feed, *
+p, ADMIN, /user/get-posts, *
+
+p, USER, /post, *
+p, ADMIN, /post, *
+p, ANONYMOUS, /post, GET
+
+p, USER, /post/*, *
+p, ADMIN, /post/*, *
+p, ANONYMOUS, /post/*, GET
+
+p, USER, /post/user/*, *
+p, ADMIN, /post/user/*, *
+p, ANONYMOUS, /post/user/*, GET
+
+p, USER, /post/react, POST
+
+p, USER, /post/*/feed, *
+p, ADMIN, /post/*/feed, *
+p, ANONYMOUS, /post/*/feed, POST
+
+p, USER, /post/*/comment, POST
+p, USER, /post/upload-image, POST
+
+p, ADMIN, /company, GET
+p, USER, /company, GET
+p, ANONYMOUS, /company, GET
+p, COMPANY, /company, *
+
+p, ADMIN, /company/*, GET
+p, USER, /company/*, GET
+p, ANONYMOUS, /company/*, GET
+p, COMPANY, /company/*, *
