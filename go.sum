@@ -44,6 +44,14 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0 h1:1LdpgD+6Rkq6o3XUlJb
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0/go.mod h1:xttahJQYo4vBgGgU4SnPeacM7vSDx1ec5RRI1Dai1D4=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19 h1:fVlApZI4CmkhpYkCtJtl3Q6yNMBcFSQT55uoAta+s8Y=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.20 h1:Mn+2EnFS/qoEdZIp1VXnRCz/qS6vJhMRYZphSngvtjQ=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.20/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.21 h1:f1da9/TQ+ce0pbBBE3fPT9wyswkydQvoA0TcjY883Yc=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.21/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.23 h1:L0fXPwM2s5tNJoeVJ5qNS3yAof4uQgUwN6aUHjX03zU=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.23/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.24 h1:Rc6rkGYKNmwO3YArbR7LrmWnvM803XoG0WquKIxIrOk=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.24/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.3 h1:FSvtXBK/nXPtldzqolGtCkHtfbh/nr4d/ldsIpPibDQ=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.3/go.mod h1:jTTX5GRUrfW832VzRVjtbIBfeHBCpkGcMJizDVVv6QM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=

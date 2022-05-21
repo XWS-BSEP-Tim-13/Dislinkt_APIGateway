@@ -16,7 +16,7 @@ type UploadImageHandler struct {
 }
 
 func (handler *UploadImageHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("POST", "/post/uploadImage", handler.UploadImage)
+	err := mux.HandlePath("POST", "/post/image", handler.UploadImage)
 	if err != nil {
 		panic(err)
 	}
