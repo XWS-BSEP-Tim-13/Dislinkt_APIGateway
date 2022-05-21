@@ -12,6 +12,8 @@ type Config struct {
 	CompanyPort string
 	AuthHost    string
 	AuthPort    string
+	RBACConfig  string
+	RBACPolicy  string
 }
 
 func NewConfig() *Config {
@@ -25,5 +27,7 @@ func NewConfig() *Config {
 		CompanyPort: os.Getenv("COMPANY_SERVICE_PORT"),
 		AuthHost:    os.Getenv("AUTH_SERVICE_HOST"),
 		AuthPort:    os.Getenv("AUTH_SERVICE_PORT"),
+		RBACConfig:  os.Getenv("RBAC_CONFIG"),
+		RBACPolicy:  os.Getenv("RBAC_POLICY"),
 	}
 }
