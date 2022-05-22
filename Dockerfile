@@ -27,6 +27,7 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 
 VOLUME /root/config
+VOLUME /root/cert
 
 # Expose port 8000 to the outside world
 EXPOSE 8083
