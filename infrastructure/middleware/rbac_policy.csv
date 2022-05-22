@@ -5,6 +5,7 @@ p, ANONYMOUS, /user/*, GET
 p, ADMIN, /in/*, *
 p, USER, /in/*, *
 p, ANONYMOUS, /in/*, GET
+p, ANONYMOUS, /forgot-password/*, POST
 
 p, ADMIN, /user, GET
 
