@@ -23,3 +23,5 @@
 /Godeps/
 
 logfiles/*
+
+.cert/
