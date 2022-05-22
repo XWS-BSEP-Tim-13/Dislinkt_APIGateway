@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
+	"net"
 	"net/http"
 )
 
@@ -21,6 +22,11 @@ type Server struct {
 	config *cfg.Config
 	mux    *runtime.ServeMux
 }
+
+const (
+	serverCertFile = "cert/cert.pem"
+	serverKeyFile  = "cert/key.pem"
+)
 
 func NewServer(config *cfg.Config) *Server {
 	server := &Server{
@@ -97,5 +103,10 @@ func (server *Server) initHomepageFeedHandler() {
 }
 
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), mw.AuthMiddleware(server.mux)))
+	address := fmt.Sprintf(":%s", server.config.Port)
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		log.Fatal("cannot start server: ", err)
+	}
+	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux), serverCertFile, serverKeyFile))
 }
