@@ -10,7 +10,10 @@ import (
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
+	"github.com/casbin/casbin/v2"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/hectane/go-acl"
+	"golang.org/x/sys/windows"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -19,13 +22,16 @@ import (
 )
 
 type Server struct {
-	config *cfg.Config
-	mux    *runtime.ServeMux
+	config   *cfg.Config
+	mux      *runtime.ServeMux
+	enforcer *casbin.CachedEnforcer
 }
 
 const (
 	serverCertFile = "cert/cert.pem"
 	serverKeyFile  = "cert/key.pem"
+	aclModelFile   = "acl/acl_model.conf"
+	aclPolicyFile  = "acl/acl_policy.csv"
 )
 
 func NewServer(config *cfg.Config) *Server {
@@ -33,6 +39,28 @@ func NewServer(config *cfg.Config) *Server {
 		config: config,
 		mux:    runtime.NewServeMux(),
 	}
+
+	if err := acl.Apply(
+		aclModelFile,
+		false,
+		false,
+		acl.GrantName(windows.GENERIC_READ, "Marija"),
+		acl.GrantName(windows.GENERIC_WRITE, "Marija"),
+		acl.DenyName(windows.GENERIC_WRITE, "Tamara"),
+	); err != nil {
+		panic(err)
+	}
+
+	if err := acl.Apply(
+		aclPolicyFile,
+		false,
+		false,
+		acl.GrantName(windows.GENERIC_READ, "Marija"),
+		acl.DenyName(windows.GENERIC_READ, "Tamara"),
+	); err != nil {
+		panic(err)
+	}
+
 	server.initHandlers()
 	server.initCustomHandlers()
 	server.initUserPostsHandler()

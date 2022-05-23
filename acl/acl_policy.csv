@@ -1,0 +1,6 @@
+p, Marija, infrastructure/rbac_model.conf, read
+p, Marija, infrastructure/rbac_model.conf, write
+p, Marija, infrastructure/rbac_policy.csv, read
+p, Marija, infrastructure/rbac_policy.csv, write
+p, Marija, startup/config/config.go, read
+p, Marija, startup/config/config.go, write
