@@ -68,3 +68,8 @@ p, ADMIN, /company/*, GET
 p, USER, /company/*, GET
 p, ANONYMOUS, /company/*, GET
 p, COMPANY, /company/*, *
+
+p, USER, /generate-code, POST
+p, ADMIN, /generate-code, POST
+p, ANONYMOUS, /generate-code, POST
+p, COMPANY, /generate-code, POST
