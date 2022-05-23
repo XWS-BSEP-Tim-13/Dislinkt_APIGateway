@@ -44,16 +44,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		return
 	}
 
-	registerAuthRequestPb := mapRegisterAuthRequestPb(registerRequestJson)
-
-	authClient := services.NewAuthClient(handler.authClientAddress)
-	_, err = authClient.Register(context.TODO(), registerAuthRequestPb)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-
+	var response []byte
 	if !registerRequestJson.IsCompany {
 		registerUserRequestPb := mapRegisterUserRequestPb(registerRequestJson)
 
@@ -65,14 +56,12 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 			return
 		}
 
-		response, err := json.Marshal(user)
+		response, err = json.Marshal(user)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("500 - Unable to register!"))
 			return
 		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
 	} else {
 		registerCompanyRequestPb := mapRegisterCompanyRequestPb(registerRequestJson)
 
@@ -84,15 +73,26 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 			return
 		}
 
-		response, err := json.Marshal(newCompany)
+		response, err = json.Marshal(newCompany)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("500 - Unable to register!"))
 			return
 		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
 	}
+
+	registerAuthRequestPb := mapRegisterAuthRequestPb(registerRequestJson)
+
+	authClient := services.NewAuthClient(handler.authClientAddress)
+	_, err = authClient.Register(context.TODO(), registerAuthRequestPb)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
 
 func mapRegisterAuthRequestPb(registerRequestJson *domain.RegisterRequest) *auth.RegisterRequest {
@@ -101,6 +101,7 @@ func mapRegisterAuthRequestPb(registerRequestJson *domain.RegisterRequest) *auth
 			Username: (*registerRequestJson).Username,
 			Password: (*registerRequestJson).Password,
 			Role:     (*registerRequestJson).Role,
+			Email:    (*registerRequestJson).Email,
 		},
 	}
 	return registerAuthRequestPb

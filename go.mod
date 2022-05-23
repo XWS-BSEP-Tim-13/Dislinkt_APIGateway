@@ -8,14 +8,12 @@ require (
 )
 
 require (
-	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.0
+	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.8
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19
 	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.3
 	github.com/casbin/casbin/v2 v2.47.1
-	github.com/casbin/mux-authz v0.0.0-20200811035004-86a2975cf31e
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gorilla/mux v1.7.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/spf13/viper v1.11.0
 	google.golang.org/protobuf v1.28.0
