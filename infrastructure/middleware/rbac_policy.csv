@@ -7,6 +7,11 @@ p, USER, /in/*, *
 p, ANONYMOUS, /in/*, GET
 p, ANONYMOUS, /forgot-password/*, POST
 
+p, ANONYMOUS, /change-password/*, *
+p, USER, /change-password/*, *
+p, ADMIN, /change-password/*, *
+
+p, ANONYMOUS, /change-password-page/*, GET
 p, ADMIN, /user, GET
 
 p, ADMIN, /user/filter/*, *
