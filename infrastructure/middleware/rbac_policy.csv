@@ -73,3 +73,8 @@ p, USER, /generate-code, POST
 p, ADMIN, /generate-code, POST
 p, ANONYMOUS, /generate-code, POST
 p, COMPANY, /generate-code, POST
+
+p, USER, /passwordless-login, POST
+p, ADMIN, /passwordless-login, POST
+p, ANONYMOUS, /passwordless-login, POST
+p, COMPANY, /passwordless-login, POST
