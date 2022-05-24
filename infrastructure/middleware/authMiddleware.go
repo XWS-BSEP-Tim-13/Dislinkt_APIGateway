@@ -32,14 +32,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if r.Method == "OPTIONS" {
 			return
 		}
-
 		fmt.Println(r.URL.Path)
-		if r.URL.Path == "/registration" || r.URL.Path == "/login" {
+		if r.URL.Path == "/registration" || r.URL.Path == "/login" || strings.Contains(r.URL.Path, "change-password") {
 			next.ServeHTTP(w, r)
 			return
 		}
-
 		tokenString := r.Header.Get("Authorization")
+		fmt.Printf("Tokenn %s\n", tokenString)
 		if len(tokenString) == 0 {
 			role := "ANONYMOUS"
 			isAuthorized, err := Enforce(role, r.URL.Path, r.Method)
@@ -54,7 +53,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 		claims, err := verifyToken(tokenString)
 		if err != nil {
@@ -91,7 +89,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 func Enforce(role string, obj string, act string) (bool, error) {
 	m, _ := os.Getwd()
 	fmt.Println(m)
-
 	enforcer, err := casbin.NewEnforcer("config/rbac_model.conf", "config/rbac_policy.csv")
 	if err != nil {
 		return false, fmt.Errorf("failed to create enforcer: %w", err)
