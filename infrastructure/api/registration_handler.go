@@ -133,6 +133,8 @@ func mapRegisterCompanyRequestPb(registerRequestJson *domain.RegisterRequest) *c
 	registerCompanyRequestPb := &company.NewCompany{
 		Company: &company.Company{
 			Username:    registerRequestJson.Username,
+			Email:       registerRequestJson.Email,
+			PhoneNumber: registerRequestJson.PhoneNumber,
 			CompanyName: registerRequestJson.CompanyName,
 			Description: registerRequestJson.Description,
 			Location:    registerRequestJson.Location,

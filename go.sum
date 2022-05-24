@@ -44,8 +44,8 @@ github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible h1
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.8 h1:hSOsjxRvssiHwHFeD7bCAaWJ7U22OHflBxdI6rG+2EM=
 github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.8/go.mod h1:wi6aKFKN47cveW04qasa2b37fiC+hoJ9FWjctp3X2x0=
-github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0 h1:1LdpgD+6Rkq6o3XUlJbkfkqQIqdWUZdiLc6lbneEfaU=
-github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0/go.mod h1:xttahJQYo4vBgGgU4SnPeacM7vSDx1ec5RRI1Dai1D4=
+github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.2 h1:3gwxTBlLKANJnH1RXsAMd75VcYo0pNrHlJH13eROBM4=
+github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.2/go.mod h1:cFAS6iTbU/fU5zCkGpHtv2w9x7aD3Ex1yADsHvl9RpY=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19 h1:fVlApZI4CmkhpYkCtJtl3Q6yNMBcFSQT55uoAta+s8Y=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.19/go.mod h1:JELZSaWuOqOGf/eVWEaPrIQJGnFaP5Em8mu2ZVrDJPo=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.3 h1:FSvtXBK/nXPtldzqolGtCkHtfbh/nr4d/ldsIpPibDQ=
