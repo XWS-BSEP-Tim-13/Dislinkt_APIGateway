@@ -32,9 +32,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if r.Method == "OPTIONS" {
 			return
 		}
-		fmt.Printf("Method is %s\n", r.Method)
 		fmt.Println(r.URL.Path)
-		if r.URL.Path == "/registration" || r.URL.Path == "/login" {
+		if r.URL.Path == "/registration" || r.URL.Path == "/login" || strings.Contains(r.URL.Path, "change-password") {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -45,7 +44,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			isAuthorized, err := Enforce(role, r.URL.Path, r.Method)
 			if !isAuthorized {
 				w.WriteHeader(http.StatusUnauthorized)
-				fmt.Printf("Unauthorized requestttttttttttttttttttttttttttttt:")
 				w.Write([]byte("Unauthorized request: " + err.Error()))
 				next.ServeHTTP(w, r)
 				return
@@ -55,7 +53,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		fmt.Println("Prosloooo")
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 		claims, err := verifyToken(tokenString)
 		if err != nil {

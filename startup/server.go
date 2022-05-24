@@ -39,6 +39,7 @@ func NewServer(config *cfg.Config) *Server {
 	server.initHomepageFeedHandler()
 	server.initUploadImageHandler()
 	server.initForgotPasswordHandler()
+	server.initChangePasswordPageHandler()
 	return server
 }
 
@@ -89,6 +90,12 @@ func (server *Server) initUserPostsHandler() {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint)
 	userPostsHandler.Init(server.mux)
+}
+
+func (server *Server) initChangePasswordPageHandler() {
+	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	changePasswordPage := api.NewChangePasswordPageHandlerHandler(authEndpoint)
+	changePasswordPage.Init(server.mux)
 }
 
 func (server *Server) initForgotPasswordHandler() {
