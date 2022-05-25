@@ -34,7 +34,8 @@ func NewServer(config *cfg.Config) *Server {
 		mux:    runtime.NewServeMux(),
 	}
 	server.initHandlers()
-	server.initCustomHandlers()
+	server.initRegistrationHandler()
+	server.initAccountActivationHandler()
 	server.initUserPostsHandler()
 	server.initHomepageFeedHandler()
 	server.initUploadImageHandler()
@@ -69,12 +70,20 @@ func (server *Server) initHandlers() {
 	}
 }
 
-func (server *Server) initCustomHandlers() {
+func (server *Server) initRegistrationHandler() {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
 	registrationHandler.Init(server.mux)
+}
+
+func (server *Server) initAccountActivationHandler() {
+	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint)
+	accountActivationHandler.Init(server.mux)
 }
 
 func (server *Server) initUploadImageHandler() {
