@@ -38,6 +38,7 @@ p, USER, /connection-request/*, DELETE
 p, USER, /user/delete-connection, PUT
 p, USER, /user/user-connection-usernames/*, GET
 
+p, ANONYMOUS, /user/feed, *
 p, ADMIN, /user/feed, *
 p, USER, /user/feed, *
 p, ADMIN, /user/get-posts, *
@@ -53,6 +54,7 @@ p, ANONYMOUS, /post/*, GET
 p, USER, /post/user/*, *
 p, ADMIN, /post/user/*, *
 p, ANONYMOUS, /post/user/*, GET
+p, ANONYMOUS, /post/image/*, GET
 
 p, USER, /post/react, POST
 

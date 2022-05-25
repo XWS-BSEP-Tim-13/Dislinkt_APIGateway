@@ -10,7 +10,7 @@ require (
 require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.0.13
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.0.0
-	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.24
+	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.0.25
 	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.0.4
 	github.com/casbin/casbin/v2 v2.47.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

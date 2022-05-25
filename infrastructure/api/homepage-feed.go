@@ -49,27 +49,45 @@ func (handler *HomepageFeedHandler) HomepageFeed(w http.ResponseWriter, r *http.
 		return
 	}
 	fmt.Printf("Decoded body: %s\n", rt.Username)
-	usersClient := services.NewUsersClient(handler.usersClientAddress)
-	resp, err := usersClient.GetConnectionUsernamesForUser(context.TODO(), &userGw.UserUsername{Username: rt.Username})
-	fmt.Printf("First response: \n")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 	postsClient := services.NewPostsClient(handler.postsClientAddress)
-	u := &postGw.Usernames{Username: resp.Usernames}
-	respPosts, err := postsClient.GetFeedPosts(context.TODO(), &postGw.FeedRequest{Page: int64(rt.Page), Usernames: u})
-	fmt.Printf("Second response: %s\n", respPosts.LastPage)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	if rt.Username != "" {
+		usersClient := services.NewUsersClient(handler.usersClientAddress)
+		resp, err := usersClient.GetConnectionUsernamesForUser(context.TODO(), &userGw.UserUsername{Username: rt.Username})
+		fmt.Printf("First response: \n")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		u := &postGw.Usernames{Username: resp.Usernames}
+		respPosts, err := postsClient.GetFeedPosts(context.TODO(), &postGw.FeedRequest{Page: int64(rt.Page), Usernames: u})
+		fmt.Printf("Second response: %s\n", respPosts.LastPage)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		response, err := json.Marshal(respPosts)
+		fmt.Printf("json response: %s\n", response)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	} else {
+		respPosts, err := postsClient.GetFeedPostsAnonymous(context.TODO(), &postGw.FeedRequestAnonymous{Page: int64(rt.Page)})
+		fmt.Printf("Second response: %s\n", respPosts.LastPage)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		response, err := json.Marshal(respPosts)
+		fmt.Printf("json response: %s\n", response)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	}
-	response, err := json.Marshal(respPosts)
-	fmt.Printf("json response: %s\n", response)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+
 }
