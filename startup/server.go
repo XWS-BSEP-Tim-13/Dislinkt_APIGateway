@@ -106,7 +106,10 @@ func (server *Server) initForgotPasswordHandler() {
 }
 
 func (server *Server) initHomepageFeedHandler() {
-
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	forgotPasswordHandler := api.NewHomepageFeedHandler(userEndpoint, postEndpoint)
+	forgotPasswordHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
