@@ -75,6 +75,13 @@ p, USER, /company/*, GET
 p, ANONYMOUS, /company/*, GET
 p, COMPANY, /company/*, *
 
+p, COMPANY, /company/job-offer, POST
+p, USER, /company/job-offer, POST
+p, COMPANY, /company/job-offer, GET
+p, USER, /company/job-offer, GET
+p, COMPANY, /company/job-offer/filter, POST
+p, USER, /company/job-offer/filter, POST
+
 p, USER, /generate-code, POST
 p, ADMIN, /generate-code, POST
 p, ANONYMOUS, /generate-code, POST
