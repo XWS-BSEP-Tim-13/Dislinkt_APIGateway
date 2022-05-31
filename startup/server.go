@@ -8,6 +8,7 @@ import (
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
+	connectionGw "github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -55,6 +56,12 @@ func (server *Server) initHandlers() {
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
+	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

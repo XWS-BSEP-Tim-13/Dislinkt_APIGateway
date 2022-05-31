@@ -33,7 +33,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		fmt.Println(r.URL.Path)
-		if r.URL.Path == "/registration" || r.URL.Path == "/login" || strings.Contains(r.URL.Path, "activate") {
+		if r.URL.Path == "/registration" || r.URL.Path == "/login" || strings.Contains(r.URL.Path, "conn/") || strings.Contains(r.URL.Path, "activate") {
 			next.ServeHTTP(w, r)
 			return
 		}
