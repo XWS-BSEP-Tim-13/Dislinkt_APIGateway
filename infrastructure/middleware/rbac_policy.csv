@@ -42,6 +42,20 @@ p, USER, /connection-request/*, DELETE
 p, USER, /user/delete-connection, PUT
 p, USER, /user/user-connection-usernames/*, GET
 
+p, USER, /conn/connection-request/*, DELETE
+p, USER, /conn/user/delete-connection, PUT
+p, USER, /conn/user/user-connection-usernames/*, GET
+p, USER, /conn/connection-request, POST
+p, USER, /conn/connection-request/by-user/*, *
+p, USER, /conn/connection-request/accept/*, *
+
+p, ANONYMOUS, /conn/connection-request/*, DELETE
+p, ANONYMOUS, /conn/user/delete-connection, PUT
+p, ANONYMOUS, /conn/user/user-connection-usernames/*, GET
+p, ANONYMOUS, /conn/connection-request, POST
+p, ANONYMOUS, /conn/connection-request/by-user/*, *
+p, ANONYMOUS, /conn/connection-request/accept/*, *
+
 p, ANONYMOUS, /user/feed, *
 p, ADMIN, /user/feed, *
 p, USER, /user/feed, *

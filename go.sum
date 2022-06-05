@@ -46,6 +46,8 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.1.4 h1:e+XgLKF8VMgy
 github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.1.4/go.mod h1:MvuwNLKiEAbpT4I/lIEKKXqiT79Ll4I9MPQupM1F7+w=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.1.5 h1:9uSVgq5mT6F0pII9S6AGq2zcAF5Gp7LcFCcOaH7VY1c=
 github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.1.5/go.mod h1:cFAS6iTbU/fU5zCkGpHtv2w9x7aD3Ex1yADsHvl9RpY=
+github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService v0.3.0 h1:eR8txRJVAPeJCIREwq//cSKvEuuv0+TIH7x0eMhuECw=
+github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService v0.3.0/go.mod h1:7ZO0GmzzdeHYxsXOSI3M9bOZ+SV02QwH/qpqNYPPYmg=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1 h1:+g1wxmgb6PAlAJvJG+Q7Z6fxjKqNl73LYKss4GPHI6k=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1/go.mod h1:veoEaUKt9OsntFwVsAQC8Gfv9IjYnnZsiTgxd7s2Ylg=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.1.2 h1:0hPElaBPWlaXH22ir58pqwC3izh8/wWzL5R1bTDBXUw=

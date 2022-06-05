@@ -10,6 +10,7 @@ require (
 require (
 	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.1.4
 	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.1.5
+	github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService v0.3.0
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1
 	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.1.2
 	github.com/casbin/casbin/v2 v2.47.1
