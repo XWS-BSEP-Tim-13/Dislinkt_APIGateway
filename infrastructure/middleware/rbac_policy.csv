@@ -10,6 +10,10 @@ p, ANONYMOUS, /forgot-password/*, POST
 p, ANONYMOUS, /change-password, PUT
 p, ANONYMOUS, /change-password/*, GET
 
+p, ADMIN, /send-token, GET
+p, USER, /send-token, GET
+p, COMPANY, /send-token, GET
+
 p, ADMIN, /user, GET
 
 p, ADMIN, /user/filter/*, *
@@ -74,6 +78,7 @@ p, ADMIN, /company/*, GET
 p, USER, /company/*, GET
 p, ANONYMOUS, /company/*, GET
 p, COMPANY, /company/*, *
+
 
 p, COMPANY, /company/job-offer, POST
 p, USER, /company/job-offer, POST

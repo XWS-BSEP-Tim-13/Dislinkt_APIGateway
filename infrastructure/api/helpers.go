@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	dom "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
+	pb "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	"io"
 	"net/http"
 )
@@ -36,4 +37,24 @@ func decodeHomepageFeedBody(r io.Reader) (*dom.HomepageFeedDto, error) {
 		return nil, err
 	}
 	return &rt, nil
+}
+
+func mapJobDomainToPb(job dom.JobOfferDto) *pb.JobOfferDto {
+	dto := &pb.JobOfferDto{
+		JobDescription: job.JobDescription,
+		Position:       job.Position,
+		Prerequisites:  job.Prerequisites,
+		EmploymentType: pb.EmploymentType(job.EmploymentType),
+		Company: &pb.Company{
+			Id:          job.Company.Id.Hex(),
+			CompanyName: job.Company.CompanyName,
+			Username:    job.Company.Username,
+			Description: job.Company.Description,
+			Location:    job.Company.Location,
+			Website:     job.Company.Website,
+			CompanySize: job.Company.CompanySize,
+			Industry:    job.Company.Industry,
+		},
+	}
+	return dto
 }

@@ -8,14 +8,16 @@ require (
 )
 
 require (
-	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.1.1
-	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.1.3
+	github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService v1.1.4
+	github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService v1.1.5
 	github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1
 	github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.1.2
 	github.com/casbin/casbin/v2 v2.47.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/go-stomp/stomp v2.1.4+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/spf13/viper v1.11.0
+	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/protobuf v1.28.0
 )
 

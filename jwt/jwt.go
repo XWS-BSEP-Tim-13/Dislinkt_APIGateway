@@ -14,6 +14,12 @@ type CustomClaims struct {
 	jwtgo.StandardClaims
 }
 
+type CustomClaimsWithEmail struct {
+	Email string `json:"email"`
+	Role  string `json:"role"`
+	jwtgo.StandardClaims
+}
+
 func CreateJwtWithIdRole(id string, role string, secondsToExpiration int64) (string, error) {
 	now := time.Now()
 	claims := CustomClaims{
@@ -50,6 +56,25 @@ func ParseJwt(tokenStr string) (*jwtgo.Token, *CustomClaims, error) {
 	}
 
 	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		panic("Type Assertion failed")
+	}
+	return token, claims, err
+}
+
+func ParseJwtWithEmail(tokenStr string) (*jwtgo.Token, *CustomClaimsWithEmail, error) {
+	token, err := jwtgo.ParseWithClaims(tokenStr, &CustomClaimsWithEmail{}, keyLookupFunction)
+	if err != nil {
+		return nil, nil, err
+	}
+	if token == nil {
+		return nil, nil, errors.New("Unable to parse token")
+	}
+	if token.Claims == nil {
+		return nil, nil, errors.New("Unable to parse token claims")
+	}
+
+	claims, ok := token.Claims.(*CustomClaimsWithEmail)
 	if !ok {
 		panic("Type Assertion failed")
 	}

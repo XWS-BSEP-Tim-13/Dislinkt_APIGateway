@@ -41,6 +41,7 @@ func NewServer(config *cfg.Config) *Server {
 	server.initUploadImageHandler()
 	server.initForgotPasswordHandler()
 	server.initChangePasswordPageHandler()
+	server.initReceiveJobOfferHandler()
 	return server
 }
 
@@ -78,6 +79,17 @@ func (server *Server) initRegistrationHandler() {
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
 	registrationHandler.Init(server.mux)
+}
+
+func (server *Server) initReceiveJobOfferHandler() {
+	//authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	//companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	////receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint)
+	//handler := func(err error, msg string) { fmt.Println("AMQ MSG:", err, msg) }
+	//if err := services.NewActiveMQ("activemq:61613").Subscribe("jobOffer.queue", handler); err != nil {
+	//	fmt.Println("AMQ ERROR:", err)
+	//}
+	//receive.HandleReceive()
 }
 
 func (server *Server) initAccountActivationHandler() {
