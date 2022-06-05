@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/jwt"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
-	"github.com/go-stomp/stomp"
-	"log"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"mime"
+	"net/http"
 )
 
 type ReceiveJobOffer struct {
@@ -25,54 +25,60 @@ func NewReceiveJobOfferHandler(authClientAddress, companyClientAddress string) *
 	}
 }
 
-func (handler *ReceiveJobOffer) Connect() (*stomp.Conn, error) {
-	return stomp.Dial("tcp", "activemq:61613")
-}
-
-func (handler *ReceiveJobOffer) HandleReceive() {
-	conn, err := handler.Connect()
-	fmt.Printf("Connecting to queue\n")
+func (handler *ReceiveJobOffer) Init(mux *runtime.ServeMux) {
+	err := mux.HandlePath("POST", "/receive-job-offer", handler.DecodeBody)
 	if err != nil {
-		fmt.Printf("Error while connecting %s\n", err)
 		panic(err)
 	}
-	sub, err := conn.Subscribe("jobOffer.queue", stomp.AckAuto)
-	if err != nil {
-		fmt.Printf("Error while subscribing %s\n", err)
-	}
-	defer conn.Disconnect()
-	defer sub.Unsubscribe()
-	for {
-		fmt.Printf("#")
-		m := <-sub.C
-		log.Println("Message : ", m.Body)
-		//handler.DecodeBody(m.Err, string(m.Body))
-	}
 }
 
-func (handler *ReceiveJobOffer) DecodeBody(err error, body string) error {
-	fmt.Printf("Decoding body %s\n", body)
+func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	fmt.Println("Request started")
+	contentType := r.Header.Get("Content-Type")
+	mediatype, _, err := mime.ParseMediaType(contentType)
 	if err != nil {
-		return err
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println("Media type error")
+		return
 	}
-	var jobTokenDto domain.JobOfferTokenDto
-	json.Unmarshal([]byte(body), &jobTokenDto)
-	fmt.Printf("Species: %s, Description: %s", jobTokenDto.JobOffer.Position, jobTokenDto.Token)
+	if mediatype != "application/json" {
+		http.Error(w, "expect application/json Content-Type", http.StatusUnsupportedMediaType)
+		fmt.Println("App type error")
+		return
+	}
+	fmt.Println(r.Body)
+	jobTokenDto, err := decodeJobOfferDtoBody(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("tokennnnn: ", jobTokenDto.Token)
 	_, claims, err := jwt.ParseJwtWithEmail(jobTokenDto.Token)
 	if err != nil {
-		return err
+		fmt.Println("Parse claims error")
+		return
 	}
 	authClient := services.NewAuthClient(handler.authClientAddress)
 	resp, err := authClient.CheckIfUserExist(context.TODO(), &authGw.CheckIfUserExistsRequest{Username: claims.Email})
 	if !resp.Exists {
-		return err
+		return
 	}
 	fmt.Printf("Received first response \n")
 	companyClient := services.NewCompanyClient(handler.companyClientAddress)
 	pb := mapJobDomainToPb(jobTokenDto.JobOffer)
 	_, err = companyClient.CreateJobOffer(context.TODO(), &companyGw.JobOfferRequest{Dto: pb})
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+
+	response, err := json.Marshal(true)
+	fmt.Printf("json response: %s\n", response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+	return
 }

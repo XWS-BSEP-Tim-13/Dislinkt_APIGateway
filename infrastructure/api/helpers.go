@@ -39,6 +39,16 @@ func decodeHomepageFeedBody(r io.Reader) (*dom.HomepageFeedDto, error) {
 	return &rt, nil
 }
 
+func decodeJobOfferDtoBody(r io.Reader) (*dom.JobOfferTokenDto, error) {
+	dec := json.NewDecoder(r)
+	//dec.DisallowUnknownFields()
+	var rt dom.JobOfferTokenDto
+	if err := dec.Decode(&rt); err != nil {
+		return nil, err
+	}
+	return &rt, nil
+}
+
 func mapJobDomainToPb(job dom.JobOfferDto) *pb.JobOfferDto {
 	dto := &pb.JobOfferDto{
 		JobDescription: job.JobDescription,

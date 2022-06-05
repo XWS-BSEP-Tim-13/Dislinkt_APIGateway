@@ -43,6 +43,7 @@ func (handler *HomepageFeedHandler) HomepageFeed(w http.ResponseWriter, r *http.
 		http.Error(w, "expect application/json Content-Type", http.StatusUnsupportedMediaType)
 		return
 	}
+	fmt.Println(r.Body)
 	rt, err := decodeHomepageFeedBody(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

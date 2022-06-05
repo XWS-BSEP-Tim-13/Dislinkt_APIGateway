@@ -89,9 +89,10 @@ func (server *Server) initRegistrationHandler() {
 }
 
 func (server *Server) initReceiveJobOfferHandler() {
-	//authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
-	//companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	////receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint)
+	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
+	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
+	receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint)
+	receive.Init(server.mux)
 	//handler := func(err error, msg string) { fmt.Println("AMQ MSG:", err, msg) }
 	//if err := services.NewActiveMQ("activemq:61613").Subscribe("jobOffer.queue", handler); err != nil {
 	//	fmt.Println("AMQ ERROR:", err)

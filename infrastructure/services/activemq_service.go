@@ -35,8 +35,8 @@ func (service *ActiveMQ) Send(token string) error {
 	fmt.Printf("Connected to activemq\n")
 	defer conn.Disconnect()
 	return conn.Send(
-		TOPIC,        // destination
-		"text/plain", // content-type
+		TOPIC,         // destination
+		"text/plain",  // content-type
 		[]byte(token)) // body
 }
 

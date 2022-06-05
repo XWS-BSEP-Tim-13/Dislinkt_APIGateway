@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
@@ -36,6 +37,7 @@ func (handler *RegistrationHandler) Init(mux *runtime.ServeMux) {
 }
 
 func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	fmt.Println(r.Body)
 	registerRequestJson, err := decodeBodyToRegisterRequest(r.Body)
 
 	if err != nil {

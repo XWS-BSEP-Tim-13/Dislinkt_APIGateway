@@ -28,7 +28,7 @@ type RegisterRequest struct {
 }
 
 type Company struct {
-	Id          primitive.ObjectID `bson:"_id"`
+	Id          primitive.ObjectID `bson:"_id" json:"id"`
 	CompanyName string             `bson:"company_name" validate:"required,companyName"`
 	Username    string             `bson:"username" validate:"required,username"`
 	Email       string             `bson:"email" validate:"required,email"`
