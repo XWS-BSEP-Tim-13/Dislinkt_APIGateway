@@ -14,7 +14,23 @@ p, ADMIN, /send-token, GET
 p, USER, /send-token, GET
 p, COMPANY, /send-token, GET
 
+p, ADMIN, /generate-qrcode, GET
+p, USER, /generate-qrcode, GET
+p, COMPANY, /generate-qrcode, GET
+
+p, ADMIN, /mfa/*, GET
+p, USER, /mfa/*, GET
+p, COMPANY, /mfa/*, GET
+
 p, ADMIN, /user, GET
+
+p, ADMIN, /mfa/check, GET
+p, USER, /mfa/check, GET
+p, ANONYMOUS, /mfa/check, GET
+
+p, ADMIN, /mfa/reset, PUT
+p, USER, /mfa/reset, PUT
+p, ANONYMOUS, /mfa/reset, PUT
 
 p, ADMIN, /user/filter/*, *
 p, USER, /user/filter/*, *
