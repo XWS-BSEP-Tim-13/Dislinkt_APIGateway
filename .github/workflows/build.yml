@@ -7,7 +7,7 @@ on:
       - feature/sonarcloud
 jobs:
   build:
-    name: Build, Test and Analyze
+    name: Build and Analyze
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
