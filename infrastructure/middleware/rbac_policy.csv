@@ -18,6 +18,8 @@ p, ADMIN, /generate-qrcode, GET
 p, USER, /generate-qrcode, GET
 p, COMPANY, /generate-qrcode, GET
 
+p, ANONYMOUS, /mfa-login/*, GET
+
 p, ADMIN, /mfa/*, GET
 p, USER, /mfa/*, GET
 p, COMPANY, /mfa/*, GET
