@@ -17,7 +17,10 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-stomp/stomp v2.1.4+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.11.0
+	github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190827215021-c074f06c5816
 	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/protobuf v1.28.0
 )
@@ -44,6 +47,7 @@ require (
 	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

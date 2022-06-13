@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
 	mw "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/middleware"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
@@ -29,20 +30,20 @@ const (
 	serverKeyFile  = "cert/key.pem"
 )
 
-func NewServer(config *cfg.Config) *Server {
+func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	server := &Server{
 		config: config,
 		mux:    runtime.NewServeMux(),
 	}
 	server.initHandlers()
-	server.initRegistrationHandler()
-	server.initAccountActivationHandler()
-	server.initUserPostsHandler()
-	server.initHomepageFeedHandler()
-	server.initUploadImageHandler()
-	server.initForgotPasswordHandler()
-	server.initChangePasswordPageHandler()
-	server.initReceiveJobOfferHandler()
+	server.initRegistrationHandler(logger)
+	server.initAccountActivationHandler(logger)
+	server.initUserPostsHandler(logger)
+	server.initHomepageFeedHandler(logger)
+	server.initUploadImageHandler(logger)
+	server.initForgotPasswordHandler(logger)
+	server.initChangePasswordPageHandler(logger)
+	server.initReceiveJobOfferHandler(logger)
 	return server
 }
 
@@ -80,72 +81,67 @@ func (server *Server) initHandlers() {
 	}
 }
 
-func (server *Server) initRegistrationHandler() {
+func (server *Server) initRegistrationHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint)
+	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint, logger)
 	registrationHandler.Init(server.mux)
 }
 
-func (server *Server) initReceiveJobOfferHandler() {
+func (server *Server) initReceiveJobOfferHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint)
+	receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint, logger)
 	receive.Init(server.mux)
-	//handler := func(err error, msg string) { fmt.Println("AMQ MSG:", err, msg) }
-	//if err := services.NewActiveMQ("activemq:61613").Subscribe("jobOffer.queue", handler); err != nil {
-	//	fmt.Println("AMQ ERROR:", err)
-	//}
-	//receive.HandleReceive()
 }
 
-func (server *Server) initAccountActivationHandler() {
+func (server *Server) initAccountActivationHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint)
+	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint, logger)
 	accountActivationHandler.Init(server.mux)
 }
 
-func (server *Server) initUploadImageHandler() {
+func (server *Server) initUploadImageHandler(logger *logger.Logger) {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	uploadImageHandler := api.NewUploadImageHandler(postEndpoint)
+	uploadImageHandler := api.NewUploadImageHandler(postEndpoint, logger)
 	uploadImageHandler.Init(server.mux)
 }
 
-func (server *Server) initUserPostsHandler() {
+func (server *Server) initUserPostsHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint)
+	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint, logger)
 	userPostsHandler.Init(server.mux)
 }
 
-func (server *Server) initChangePasswordPageHandler() {
+func (server *Server) initChangePasswordPageHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	changePasswordPage := api.NewChangePasswordPageHandlerHandler(authEndpoint)
+	changePasswordPage := api.NewChangePasswordPageHandlerHandler(authEndpoint, logger)
 	changePasswordPage.Init(server.mux)
 }
 
-func (server *Server) initForgotPasswordHandler() {
+func (server *Server) initForgotPasswordHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	forgotPasswordHandler := api.NewForgotPasswordHandler(userEndpoint, authEndpoint)
+	forgotPasswordHandler := api.NewForgotPasswordHandler(userEndpoint, authEndpoint, logger)
 	forgotPasswordHandler.Init(server.mux)
 }
 
-func (server *Server) initHomepageFeedHandler() {
+func (server *Server) initHomepageFeedHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	forgotPasswordHandler := api.NewHomepageFeedHandler(userEndpoint, postEndpoint)
+	forgotPasswordHandler := api.NewHomepageFeedHandler(userEndpoint, postEndpoint, logger)
 	forgotPasswordHandler.Init(server.mux)
 }
 
-func (server *Server) Start() {
+func (server *Server) Start(logger *logger.Logger) {
 	address := fmt.Sprintf(":%s", server.config.Port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux), serverCertFile, serverKeyFile))
+	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux, logger), serverCertFile, serverKeyFile))
 }

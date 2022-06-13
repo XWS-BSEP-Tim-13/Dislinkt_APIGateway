@@ -28,6 +28,7 @@ COPY --from=builder /app/main .
 
 VOLUME /root/config
 VOLUME /root/cert
+VOLUME /root/logs
 
 # Expose port 8000 to the outside world
 EXPOSE 8083

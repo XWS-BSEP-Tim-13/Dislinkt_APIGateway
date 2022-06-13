@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/spf13/viper"
@@ -21,7 +22,7 @@ func allowedOrigin(origin string) bool {
 	return false
 }
 
-func AuthMiddleware(next http.Handler) http.Handler {
+func AuthMiddleware(next http.Handler, logger *logger.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if allowedOrigin(r.Header.Get("Origin")) {
@@ -29,6 +30,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, ResponseType")
 		}
+
 		if r.Method == "OPTIONS" {
 			return
 		}
@@ -38,12 +40,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
+
 		tokenString := r.Header.Get("Authorization")
 		fmt.Printf("Tokenn %s\n", tokenString)
 		if len(tokenString) == 0 {
 			role := "ANONYMOUS"
 			isAuthorized, err := Enforce(role, r.URL.Path, r.Method)
 			if !isAuthorized {
+				logger.WarningMessage("User: Anonymous | Unauthorized request for " + r.Method + " " + r.URL.Path)
 				w.WriteHeader(http.StatusUnauthorized)
 				w.Write([]byte("Unauthorized request: " + err.Error()))
 				next.ServeHTTP(w, r)
@@ -51,6 +55,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 
 			r.Header.Set("role", role)
+			r.Header.Set("user", "Anonymous")
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -58,6 +63,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		claims, err := verifyToken(tokenString)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
+			logger.WarningMessage("Error verifying JWT")
+			logger.ErrorMessage("Error verifying JWT")
 			w.Write([]byte("Error verifying JWT token: " + err.Error()))
 			return
 		}
@@ -69,12 +76,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
+			logger.ErrorMessage("User: " + username + " | Error while authorization for " + r.Method + " " + r.URL.Path)
 			w.Write([]byte("Error while authorization: " + err.Error()))
 			return
 		}
 
 		if !isAuthorized {
 			w.WriteHeader(http.StatusUnauthorized)
+			logger.WarningMessage("User: " + username + " | Unauthorized request for " + r.Method + " " + r.URL.Path)
 			w.Write([]byte("Unauthorized request: " + err.Error()))
 			next.ServeHTTP(w, r)
 			return

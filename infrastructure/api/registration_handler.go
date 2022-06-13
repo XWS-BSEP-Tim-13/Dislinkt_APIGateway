@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	company "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
@@ -19,13 +20,15 @@ type RegistrationHandler struct {
 	authClientAddress    string
 	userClientAddress    string
 	companyClientAddress string
+	logger               *logger.Logger
 }
 
-func NewRegistrationHandler(authClientAddress, userClientAddress, companyClientAddress string) *RegistrationHandler {
+func NewRegistrationHandler(authClientAddress, userClientAddress, companyClientAddress string, logger *logger.Logger) *RegistrationHandler {
 	return &RegistrationHandler{
 		authClientAddress:    authClientAddress,
 		userClientAddress:    userClientAddress,
 		companyClientAddress: companyClientAddress,
+		logger:               logger,
 	}
 }
 
@@ -43,6 +46,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("400 - Unable to decode request body!"))
+		handler.logger.ErrorMessage("Action: Register user | Message: Unable to decode request body")
 		return
 	}
 
@@ -53,6 +57,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		userClient := services.NewUserClient(handler.userClientAddress)
 		user, err := userClient.CreateUser(context.TODO(), registerUserRequestPb)
 		if err != nil {
+			handler.logger.ErrorMessage("Action: Register user | Message: Error saving user")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -70,6 +75,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		companyClient := services.NewCompanyClient(handler.companyClientAddress)
 		newCompany, err := companyClient.CreateCompany(context.TODO(), registerCompanyRequestPb)
 		if err != nil {
+			handler.logger.ErrorMessage("Action: Register company | Message: Error saving company")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -92,7 +98,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		w.Write([]byte(err.Error()))
 		return
 	}
-
+	handler.logger.InfoMessage("User: " + registerAuthRequestPb.User.Username + " | Action: Registration ")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/jwt"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -16,12 +17,14 @@ import (
 type ReceiveJobOffer struct {
 	authClientAddress    string
 	companyClientAddress string
+	logger               *logger.Logger
 }
 
-func NewReceiveJobOfferHandler(authClientAddress, companyClientAddress string) *ReceiveJobOffer {
+func NewReceiveJobOfferHandler(authClientAddress, companyClientAddress string, logger *logger.Logger) *ReceiveJobOffer {
 	return &ReceiveJobOffer{
 		authClientAddress:    authClientAddress,
 		companyClientAddress: companyClientAddress,
+		logger:               logger,
 	}
 }
 
@@ -49,13 +52,15 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 	fmt.Println(r.Body)
 	jobTokenDto, err := decodeJobOfferDtoBody(r.Body)
 	if err != nil {
+		handler.logger.ErrorMessage("Action: Decode job offer body")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("tokennnnn: ", jobTokenDto.Token)
+
 	_, claims, err := jwt.ParseJwtWithEmail(jobTokenDto.Token)
 	if err != nil {
+		handler.logger.ErrorMessage("Action: Parsing jwt claims")
 		fmt.Println("Parse claims error")
 		return
 	}
@@ -69,6 +74,7 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 	pb := mapJobDomainToPb(jobTokenDto.JobOffer)
 	_, err = companyClient.CreateJobOffer(context.TODO(), &companyGw.JobOfferRequest{Dto: pb})
 	if err != nil {
+		handler.logger.ErrorMessage("Company: " + claims.Email + " | Action: Create job offer")
 		return
 	}
 
@@ -78,6 +84,8 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	handler.logger.InfoMessage("Company: " + claims.Email + " | Action: Create job offer")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 	return

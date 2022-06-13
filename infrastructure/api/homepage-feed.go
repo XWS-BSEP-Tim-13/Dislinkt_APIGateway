@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -15,6 +16,7 @@ import (
 type HomepageFeedHandler struct {
 	usersClientAddress string
 	postsClientAddress string
+	logger             *logger.Logger
 }
 
 func (handler *HomepageFeedHandler) Init(mux *runtime.ServeMux) {
@@ -24,10 +26,11 @@ func (handler *HomepageFeedHandler) Init(mux *runtime.ServeMux) {
 	}
 }
 
-func NewHomepageFeedHandler(usersClientAddress, postsClientAddress string) Handler {
+func NewHomepageFeedHandler(usersClientAddress, postsClientAddress string, logger *logger.Logger) Handler {
 	return &HomepageFeedHandler{
 		postsClientAddress: postsClientAddress,
 		usersClientAddress: usersClientAddress,
+		logger:             logger,
 	}
 }
 
@@ -54,41 +57,44 @@ func (handler *HomepageFeedHandler) HomepageFeed(w http.ResponseWriter, r *http.
 	if rt.Username != "" {
 		usersClient := services.NewUsersClient(handler.usersClientAddress)
 		resp, err := usersClient.GetConnectionUsernamesForUser(context.TODO(), &userGw.UserUsername{Username: rt.Username})
-		fmt.Printf("First response: \n")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		u := &postGw.Usernames{Username: resp.Usernames}
 		respPosts, err := postsClient.GetFeedPosts(context.TODO(), &postGw.FeedRequest{Page: int64(rt.Page), Usernames: u})
-		fmt.Printf("Second response: %s\n", respPosts.LastPage)
 		if err != nil {
+			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: Get homepage feed | Message: Bad request")
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		response, err := json.Marshal(respPosts)
 		fmt.Printf("json response: %s\n", response)
 		if err != nil {
+			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: Get homepage feed | Message: Server error")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		handler.logger.InfoMessage("User: " + rt.Username + " | Action: Get homepage feed")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	} else {
 		respPosts, err := postsClient.GetFeedPostsAnonymous(context.TODO(), &postGw.FeedRequestAnonymous{Page: int64(rt.Page)})
-		fmt.Printf("Second response: %s\n", respPosts.LastPage)
 		if err != nil {
+			handler.logger.ErrorMessage("User: Anonymous | Action: Get homepage feed | Message: Bad request")
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		response, err := json.Marshal(respPosts)
 		fmt.Printf("json response: %s\n", response)
 		if err != nil {
+			handler.logger.ErrorMessage("User: Anonymous | Action: Get homepage feed | Message: Server error")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		handler.logger.InfoMessage("User: Anonymous | Action: Get homepage feed ")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	}
-
 }

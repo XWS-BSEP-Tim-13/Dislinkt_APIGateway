@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	company "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
@@ -14,13 +15,15 @@ type AccountActivationHandler struct {
 	authClientAddress    string
 	userClientAddress    string
 	companyClientAddress string
+	logger               *logger.Logger
 }
 
-func NewAccountActivationHandler(authClientAddress, userClientAddress, companyClientAddress string) *AccountActivationHandler {
+func NewAccountActivationHandler(authClientAddress, userClientAddress, companyClientAddress string, logger *logger.Logger) *AccountActivationHandler {
 	return &AccountActivationHandler{
 		authClientAddress:    authClientAddress,
 		userClientAddress:    userClientAddress,
 		companyClientAddress: companyClientAddress,
+		logger:               logger,
 	}
 }
 
@@ -52,6 +55,7 @@ func (handler *AccountActivationHandler) HandleActivateAccount(w http.ResponseWr
 			Email: response.ActivatedAccount.Email,
 		})
 		if err != nil {
+			handler.logger.ErrorMessage("User: " + response.ActivatedAccount.Email + " | Action: Activate account")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -62,12 +66,14 @@ func (handler *AccountActivationHandler) HandleActivateAccount(w http.ResponseWr
 			Email: response.ActivatedAccount.Email,
 		})
 		if err != nil {
+			handler.logger.ErrorMessage("Company: " + response.ActivatedAccount.Email + " | Action: Activate account")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
 		}
 	}
 
+	handler.logger.InfoMessage("User: " + response.ActivatedAccount.Email + " | Action: Activate account")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response.ActivatedAccount.Message))
 }

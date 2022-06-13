@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
+	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -15,12 +16,14 @@ import (
 type UsersPostsHandler struct {
 	usersClientAddress string
 	postsClientAddress string
+	logger             *logger.Logger
 }
 
-func NewUsersPostsHandler(usersClientAddress, postsClientAddress string) Handler {
+func NewUsersPostsHandler(usersClientAddress, postsClientAddress string, logger *logger.Logger) Handler {
 	return &UsersPostsHandler{
 		postsClientAddress: postsClientAddress,
 		usersClientAddress: usersClientAddress,
+		logger:             logger,
 	}
 }
 
@@ -71,6 +74,7 @@ func (handler *UsersPostsHandler) GetUsersPosts(w http.ResponseWriter, r *http.R
 	posts, err2 := postsClient.GetByUser(context.TODO(), &postGw.GetByUserRequest{Username: rt.Username})
 	fmt.Printf("Second response: \n")
 	if err2 != nil {
+		handler.logger.ErrorMessage("Action: Get user posts | Message: Bad request")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -78,9 +82,11 @@ func (handler *UsersPostsHandler) GetUsersPosts(w http.ResponseWriter, r *http.R
 	response, err := json.Marshal(posts)
 	fmt.Printf("json response: %s\n", response)
 	if err != nil {
+		handler.logger.ErrorMessage("Action: Get user posts | Message: Server error")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	handler.logger.InfoMessage("Action: Get user posts")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
