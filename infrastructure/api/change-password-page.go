@@ -35,11 +35,11 @@ func (handler *ChangePasswordPageHandler) ChangePasswordPage(w http.ResponseWrit
 	authClient := services.NewAuthClient(handler.authenticationClientAddress)
 	_, err := authClient.ChangePasswordPage(context.TODO(), &authGw.ChangePasswordPageRequest{Token: token})
 	if err != nil {
-		handler.logger.ErrorMessage("Action: Change password | Message: Bad request")
+		handler.logger.ErrorMessage("Action: CP")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	http.Redirect(w, r, "https://localhost:3000/change-password/"+token, http.StatusTemporaryRedirect)
-	handler.logger.InfoMessage("Action: Change password")
+	handler.logger.InfoMessage("Action: CP")
 	//w.WriteHeader(http.StatusOK)
 }

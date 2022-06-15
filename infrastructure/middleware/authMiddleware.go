@@ -47,7 +47,7 @@ func AuthMiddleware(next http.Handler, logger *logger.Logger) http.Handler {
 			role := "ANONYMOUS"
 			isAuthorized, err := Enforce(role, r.URL.Path, r.Method)
 			if !isAuthorized {
-				logger.WarningMessage("User: Anonymous | Unauthorized request for " + r.Method + " " + r.URL.Path)
+				logger.WarningMessage("User: Anonymous | 403 " + r.Method + " " + r.URL.Path)
 				w.WriteHeader(http.StatusUnauthorized)
 				w.Write([]byte("Unauthorized request: " + err.Error()))
 				next.ServeHTTP(w, r)
@@ -63,8 +63,8 @@ func AuthMiddleware(next http.Handler, logger *logger.Logger) http.Handler {
 		claims, err := verifyToken(tokenString)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			logger.WarningMessage("Error verifying JWT")
-			logger.ErrorMessage("Error verifying JWT")
+			logger.WarningMessage("VJWT")
+			logger.ErrorMessage("VJWT")
 			w.Write([]byte("Error verifying JWT token: " + err.Error()))
 			return
 		}
@@ -76,14 +76,14 @@ func AuthMiddleware(next http.Handler, logger *logger.Logger) http.Handler {
 
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			logger.ErrorMessage("User: " + username + " | Error while authorization for " + r.Method + " " + r.URL.Path)
+			logger.ErrorMessage("User: " + username + " | AuthEr " + r.Method + " " + r.URL.Path)
 			w.Write([]byte("Error while authorization: " + err.Error()))
 			return
 		}
 
 		if !isAuthorized {
 			w.WriteHeader(http.StatusUnauthorized)
-			logger.WarningMessage("User: " + username + " | Unauthorized request for " + r.Method + " " + r.URL.Path)
+			logger.WarningMessage("User: " + username + " | 403 " + r.Method + " " + r.URL.Path)
 			w.Write([]byte("Unauthorized request: " + err.Error()))
 			next.ServeHTTP(w, r)
 			return

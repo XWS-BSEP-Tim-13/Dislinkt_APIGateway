@@ -64,36 +64,36 @@ func (handler *HomepageFeedHandler) HomepageFeed(w http.ResponseWriter, r *http.
 		u := &postGw.Usernames{Username: resp.Usernames}
 		respPosts, err := postsClient.GetFeedPosts(context.TODO(), &postGw.FeedRequest{Page: int64(rt.Page), Usernames: u})
 		if err != nil {
-			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: Get homepage feed | Message: Bad request")
+			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: HPF")
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		response, err := json.Marshal(respPosts)
 		fmt.Printf("json response: %s\n", response)
 		if err != nil {
-			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: Get homepage feed | Message: Server error")
+			handler.logger.ErrorMessage("User: " + rt.Username + " | Action: HPF")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		handler.logger.InfoMessage("User: " + rt.Username + " | Action: Get homepage feed")
+		handler.logger.InfoMessage("User: " + rt.Username + " | Action: HPF")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	} else {
 		respPosts, err := postsClient.GetFeedPostsAnonymous(context.TODO(), &postGw.FeedRequestAnonymous{Page: int64(rt.Page)})
 		if err != nil {
-			handler.logger.ErrorMessage("User: Anonymous | Action: Get homepage feed | Message: Bad request")
+			handler.logger.ErrorMessage("User: Anonymous | Action: HPF")
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		response, err := json.Marshal(respPosts)
 		fmt.Printf("json response: %s\n", response)
 		if err != nil {
-			handler.logger.ErrorMessage("User: Anonymous | Action: Get homepage feed | Message: Server error")
+			handler.logger.ErrorMessage("User: Anonymous | Action: HPF")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		handler.logger.InfoMessage("User: Anonymous | Action: Get homepage feed ")
+		handler.logger.InfoMessage("User: Anonymous | Action: HPF")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	}

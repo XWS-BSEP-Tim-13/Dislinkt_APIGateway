@@ -51,18 +51,18 @@ func (handler *ForgotPasswordHandler) ForgotPassword(w http.ResponseWriter, r *h
 	usersClient := services.NewUsersClient(handler.usersClientAddress)
 	_, err = usersClient.GetByEmail(context.TODO(), &userGw.GetRequest{Id: email})
 	if err != nil {
-		handler.logger.WarningMessage("User " + email + " | Action: Forgot password | Message: Email not exists")
-		handler.logger.ErrorMessage("User " + email + " | Action: Forgot password | Message: Email not exists")
+		handler.logger.WarningMessage("User " + email + " | Action: FP")
+		handler.logger.ErrorMessage("User " + email + " | Action: FP")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	authClient := services.NewAuthClient(handler.authenticationClientAddress)
 	_, err = authClient.ForgotPassword(context.TODO(), &authGw.ForgotPasswordRequest{Email: email})
 	if err != nil {
-		handler.logger.ErrorMessage("User " + email + " | Action: Forgot password | Message: Bad request")
+		handler.logger.ErrorMessage("User " + email + " | Action: FP")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	handler.logger.InfoMessage("User " + email + " | Action: Forgot password")
+	handler.logger.InfoMessage("User " + email + " | Action: FP")
 }

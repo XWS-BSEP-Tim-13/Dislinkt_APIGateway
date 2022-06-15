@@ -55,7 +55,7 @@ func (handler *AccountActivationHandler) HandleActivateAccount(w http.ResponseWr
 			Email: response.ActivatedAccount.Email,
 		})
 		if err != nil {
-			handler.logger.ErrorMessage("User: " + response.ActivatedAccount.Email + " | Action: Activate account")
+			handler.logger.ErrorMessage("User: " + response.ActivatedAccount.Email + " | Action: AA")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -66,14 +66,14 @@ func (handler *AccountActivationHandler) HandleActivateAccount(w http.ResponseWr
 			Email: response.ActivatedAccount.Email,
 		})
 		if err != nil {
-			handler.logger.ErrorMessage("Company: " + response.ActivatedAccount.Email + " | Action: Activate account")
+			handler.logger.ErrorMessage("Company: " + response.ActivatedAccount.Email + " | Action: AA")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
 		}
 	}
 
-	handler.logger.InfoMessage("User: " + response.ActivatedAccount.Email + " | Action: Activate account")
+	handler.logger.InfoMessage("User: " + response.ActivatedAccount.Email + " | Action: AA")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response.ActivatedAccount.Message))
 }

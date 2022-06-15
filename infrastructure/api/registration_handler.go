@@ -46,7 +46,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("400 - Unable to decode request body!"))
-		handler.logger.ErrorMessage("Action: Register user | Message: Unable to decode request body")
+		handler.logger.ErrorMessage("Action: RU")
 		return
 	}
 
@@ -57,7 +57,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		userClient := services.NewUserClient(handler.userClientAddress)
 		user, err := userClient.CreateUser(context.TODO(), registerUserRequestPb)
 		if err != nil {
-			handler.logger.ErrorMessage("Action: Register user | Message: Error saving user")
+			handler.logger.ErrorMessage("Action: RU")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -75,7 +75,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		companyClient := services.NewCompanyClient(handler.companyClientAddress)
 		newCompany, err := companyClient.CreateCompany(context.TODO(), registerCompanyRequestPb)
 		if err != nil {
-			handler.logger.ErrorMessage("Action: Register company | Message: Error saving company")
+			handler.logger.ErrorMessage("Action: RC")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return

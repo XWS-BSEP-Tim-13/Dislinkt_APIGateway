@@ -74,7 +74,7 @@ func (handler *UsersPostsHandler) GetUsersPosts(w http.ResponseWriter, r *http.R
 	posts, err2 := postsClient.GetByUser(context.TODO(), &postGw.GetByUserRequest{Username: rt.Username})
 	fmt.Printf("Second response: \n")
 	if err2 != nil {
-		handler.logger.ErrorMessage("Action: Get user posts | Message: Bad request")
+		handler.logger.ErrorMessage("Action: GUP")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -82,11 +82,11 @@ func (handler *UsersPostsHandler) GetUsersPosts(w http.ResponseWriter, r *http.R
 	response, err := json.Marshal(posts)
 	fmt.Printf("json response: %s\n", response)
 	if err != nil {
-		handler.logger.ErrorMessage("Action: Get user posts | Message: Server error")
+		handler.logger.ErrorMessage("Action: GUP")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	handler.logger.InfoMessage("Action: Get user posts")
+	handler.logger.InfoMessage("Action: GUP")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }

@@ -52,7 +52,7 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 	fmt.Println(r.Body)
 	jobTokenDto, err := decodeJobOfferDtoBody(r.Body)
 	if err != nil {
-		handler.logger.ErrorMessage("Action: Decode job offer body")
+		handler.logger.ErrorMessage("Action: DcdJO")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err)
 		return
@@ -60,7 +60,7 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 
 	_, claims, err := jwt.ParseJwtWithEmail(jobTokenDto.Token)
 	if err != nil {
-		handler.logger.ErrorMessage("Action: Parsing jwt claims")
+		handler.logger.ErrorMessage("Action: PJWTC")
 		fmt.Println("Parse claims error")
 		return
 	}
@@ -74,7 +74,7 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 	pb := mapJobDomainToPb(jobTokenDto.JobOffer)
 	_, err = companyClient.CreateJobOffer(context.TODO(), &companyGw.JobOfferRequest{Dto: pb})
 	if err != nil {
-		handler.logger.ErrorMessage("Company: " + claims.Email + " | Action: Create job offer")
+		handler.logger.ErrorMessage("Company: " + claims.Email + " | Action: CJO")
 		return
 	}
 
@@ -85,7 +85,7 @@ func (handler *ReceiveJobOffer) DecodeBody(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	handler.logger.InfoMessage("Company: " + claims.Email + " | Action: Create job offer")
+	handler.logger.InfoMessage("Company: " + claims.Email + " | Action: CJO")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 	return

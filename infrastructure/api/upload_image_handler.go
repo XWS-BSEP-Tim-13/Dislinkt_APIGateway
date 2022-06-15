@@ -54,7 +54,7 @@ func (handler *UploadImageHandler) UploadImage(w http.ResponseWriter, r *http.Re
 	resp, _ := postsClient.UploadImage(context.TODO(), &postGw.ImageRequest{Image: fileBytes})
 	response, _ := json.Marshal(resp.ImagePath)
 
-	handler.logger.InfoMessage("File uploaded")
+	handler.logger.InfoMessage("FU")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
