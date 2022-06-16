@@ -14,7 +14,7 @@ import (
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
 	"net/http"
@@ -26,8 +26,13 @@ type Server struct {
 }
 
 const (
-	serverCertFile = "cert/cert.pem"
-	serverKeyFile  = "cert/key.pem"
+	gatewayCertFile    = "cert/cert.pem"
+	gatewayKeyFile     = "cert/key.pem"
+	authCertFile       = "cert/auth-cert.pem"
+	companyCertFile    = "cert/company-cert.pem"
+	connectionCertFile = "cert/connection-cert.pem"
+	postCertFile       = "cert/post-cert.pem"
+	userCertFile       = "cert/user-cert.pem"
 )
 
 func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
@@ -48,34 +53,42 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
-	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
+	auth_creds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
+	opts_auth := []grpc.DialOption{grpc.WithTransportCredentials(auth_creds)}
+	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts_auth)
 	if err != nil {
 		panic(err)
 	}
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+	company_creds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
+	opts_company := []grpc.DialOption{grpc.WithTransportCredentials(company_creds)}
+	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts_company)
 	if err != nil {
 		panic(err)
 	}
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
-	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	connection_creds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
+	opts_connection := []grpc.DialOption{grpc.WithTransportCredentials(connection_creds)}
+	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts_connection)
 	if err != nil {
 		panic(err)
 	}
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
+	post_creds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
+	opts_post := []grpc.DialOption{grpc.WithTransportCredentials(post_creds)}
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts_post)
 	if err != nil {
 		panic(err)
 	}
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	user_creds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
+	opts_user := []grpc.DialOption{grpc.WithTransportCredentials(user_creds)}
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts_user)
 	if err != nil {
 		panic(err)
 	}
@@ -143,5 +156,5 @@ func (server *Server) Start(logger *logger.Logger) {
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux, logger), serverCertFile, serverKeyFile))
+	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux, logger), gatewayCertFile, gatewayKeyFile))
 }
