@@ -12,6 +12,8 @@ const (
 	RemoveConnectionToUser
 	BlockUser
 	UnknownCommand
+	RollbackUpdates
+	FinnishFunction
 )
 
 type BlockUserCommand struct {
@@ -25,6 +27,7 @@ const (
 	RemoveConnectionFromUserUpdated BlockUserReplyType = iota
 	RemoveConnectionToUserUpdated
 	UserBlocked
+	ErrorOccured
 	UnknownReply
 )
 
