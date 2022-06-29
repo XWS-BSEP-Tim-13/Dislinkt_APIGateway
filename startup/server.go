@@ -53,6 +53,8 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 }
 
 func (server *Server) initHandlers() {
+	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	auth_creds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
 	opts_auth := []grpc.DialOption{grpc.WithTransportCredentials(auth_creds)}
