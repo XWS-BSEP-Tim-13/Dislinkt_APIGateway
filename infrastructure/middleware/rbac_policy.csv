@@ -54,6 +54,7 @@ p, USER, /user/interest, PUT
 p, USER, /user/account-privacy/*, PUT
 p, USER, /conn/user/users-connected/*, GET
 p, USER, /conn/user/block/*, PUT
+p, USER, /conn/user/block/*, GET
 p, USER, /user/experience/delete, PUT
 p, USER, /user/education/delete, PUT
 p, USER, /user/removeSkill, PUT
