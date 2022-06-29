@@ -2,6 +2,7 @@ package nats
 
 import (
 	saga "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging"
+	"github.com/nats-io/nats.go"
 )
 
 type Publisher struct {
