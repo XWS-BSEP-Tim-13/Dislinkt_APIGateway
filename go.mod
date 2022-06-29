@@ -18,6 +18,7 @@ require (
 	github.com/go-stomp/stomp v2.1.4+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/nats-io/nats.go v1.16.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.11.0
 	github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190827215021-c074f06c5816
@@ -33,6 +34,9 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
+	github.com/nats-io/nats-server/v2 v2.8.4 // indirect
+	github.com/nats-io/nkeys v0.3.0 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
@@ -41,6 +45,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
 	golang.org/x/text v0.3.7 // indirect
