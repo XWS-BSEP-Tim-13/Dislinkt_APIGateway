@@ -18,3 +18,17 @@ type BlockUserCommand struct {
 	Users Users
 	Type  BlockUserCommandType
 }
+
+type BlockUserReplyType int8
+
+const (
+	RemoveConnectionFromUserUpdated BlockUserReplyType = iota
+	RemoveConnectionToUserUpdated
+	UserBlocked
+	UnknownReply
+)
+
+type BlockUserReply struct {
+	Users Users
+	Type  BlockUserReplyType
+}
