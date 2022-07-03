@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/tracer"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
 	"mime"
 	"net/http"
 )
@@ -16,6 +18,7 @@ type ForgotPasswordHandler struct {
 	usersClientAddress          string
 	authenticationClientAddress string
 	logger                      *logger.Logger
+	tracer                      *opentracing.Tracer
 }
 
 func (handler *ForgotPasswordHandler) Init(mux *runtime.ServeMux) {
@@ -25,16 +28,25 @@ func (handler *ForgotPasswordHandler) Init(mux *runtime.ServeMux) {
 	}
 }
 
-func NewForgotPasswordHandler(usersClientAddress, authenticationClientAddress string, logger *logger.Logger) Handler {
+func NewForgotPasswordHandler(usersClientAddress, authenticationClientAddress string, logger *logger.Logger, tracer *opentracing.Tracer) Handler {
 	return &ForgotPasswordHandler{
 		authenticationClientAddress: authenticationClientAddress,
 		usersClientAddress:          usersClientAddress,
 		logger:                      logger,
+		tracer:                      tracer,
 	}
 }
 
 func (handler *ForgotPasswordHandler) ForgotPassword(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	fmt.Println("Request started")
+	span := tracer.StartSpanFromRequest("ForgotPassword", *handler.tracer, r)
+	defer span.Finish()
+
+	span.LogFields(
+		tracer.LogString("handler", fmt.Sprintf("handling post create at %s\n", r.URL.Path)),
+	)
+
+	ctx := tracer.ContextWithSpan(context.Background(), span)
+
 	email := pathParams["email"]
 	contentType := r.Header.Get("Content-Type")
 	mediatype, _, err := mime.ParseMediaType(contentType)
@@ -49,7 +61,7 @@ func (handler *ForgotPasswordHandler) ForgotPassword(w http.ResponseWriter, r *h
 
 	fmt.Printf("Decoded body: %s\n", email)
 	usersClient := services.NewUsersClient(handler.usersClientAddress)
-	_, err = usersClient.GetByEmail(context.TODO(), &userGw.GetRequest{Id: email})
+	_, err = usersClient.GetByEmail(ctx, &userGw.GetRequest{Id: email})
 	if err != nil {
 		handler.logger.WarningMessage("User " + email + " | Action: FP")
 		handler.logger.ErrorMessage("User " + email + " | Action: FP")
@@ -57,7 +69,7 @@ func (handler *ForgotPasswordHandler) ForgotPassword(w http.ResponseWriter, r *h
 		return
 	}
 	authClient := services.NewAuthClient(handler.authenticationClientAddress)
-	_, err = authClient.ForgotPassword(context.TODO(), &authGw.ForgotPasswordRequest{Email: email})
+	_, err = authClient.ForgotPassword(ctx, &authGw.ForgotPasswordRequest{Email: email})
 	if err != nil {
 		handler.logger.ErrorMessage("User " + email + " | Action: FP")
 		http.Error(w, err.Error(), http.StatusBadRequest)

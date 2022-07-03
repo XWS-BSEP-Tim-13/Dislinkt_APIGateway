@@ -7,10 +7,12 @@ import (
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/tracer"
 	auth "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	company "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	user "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"net/http"
@@ -21,14 +23,16 @@ type RegistrationHandler struct {
 	userClientAddress    string
 	companyClientAddress string
 	logger               *logger.Logger
+	tracer               *opentracing.Tracer
 }
 
-func NewRegistrationHandler(authClientAddress, userClientAddress, companyClientAddress string, logger *logger.Logger) *RegistrationHandler {
+func NewRegistrationHandler(authClientAddress, userClientAddress, companyClientAddress string, logger *logger.Logger, tracer *opentracing.Tracer) *RegistrationHandler {
 	return &RegistrationHandler{
 		authClientAddress:    authClientAddress,
 		userClientAddress:    userClientAddress,
 		companyClientAddress: companyClientAddress,
 		logger:               logger,
+		tracer:               tracer,
 	}
 }
 
@@ -40,7 +44,13 @@ func (handler *RegistrationHandler) Init(mux *runtime.ServeMux) {
 }
 
 func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	fmt.Println(r.Body)
+	span := tracer.StartSpanFromRequest("HandleRegister", *handler.tracer, r)
+	defer span.Finish()
+
+	span.LogFields(
+		tracer.LogString("handler", fmt.Sprintf("handling post create at %s\n", r.URL.Path)),
+	)
+
 	registerRequestJson, err := decodeBodyToRegisterRequest(r.Body)
 
 	if err != nil {
@@ -50,12 +60,14 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		return
 	}
 
+	ctx := tracer.ContextWithSpan(context.Background(), span)
+
 	var response []byte
 	if !registerRequestJson.IsCompany {
 		registerUserRequestPb := mapRegisterUserRequestPb(registerRequestJson)
 
 		userClient := services.NewUserClient(handler.userClientAddress)
-		user, err := userClient.CreateUser(context.TODO(), registerUserRequestPb)
+		user, err := userClient.CreateUser(ctx, registerUserRequestPb)
 		if err != nil {
 			handler.logger.ErrorMessage("Action: RU")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -73,7 +85,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 		registerCompanyRequestPb := mapRegisterCompanyRequestPb(registerRequestJson)
 
 		companyClient := services.NewCompanyClient(handler.companyClientAddress)
-		newCompany, err := companyClient.CreateCompany(context.TODO(), registerCompanyRequestPb)
+		newCompany, err := companyClient.CreateCompany(ctx, registerCompanyRequestPb)
 		if err != nil {
 			handler.logger.ErrorMessage("Action: RC")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,7 +104,7 @@ func (handler *RegistrationHandler) HandleRegister(w http.ResponseWriter, r *htt
 	registerAuthRequestPb := mapRegisterAuthRequestPb(registerRequestJson)
 
 	authClient := services.NewAuthClient(handler.authClientAddress)
-	_, err = authClient.Register(context.TODO(), registerAuthRequestPb)
+	_, err = authClient.Register(ctx, registerAuthRequestPb)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/services"
 	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/tracer"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
 	"io/ioutil"
 	"net/http"
 )
@@ -15,6 +17,7 @@ import (
 type UploadImageHandler struct {
 	postsClientAddress string
 	logger             *logger.Logger
+	tracer             *opentracing.Tracer
 }
 
 func (handler *UploadImageHandler) Init(mux *runtime.ServeMux) {
@@ -24,15 +27,24 @@ func (handler *UploadImageHandler) Init(mux *runtime.ServeMux) {
 	}
 }
 
-func NewUploadImageHandler(postsClientAddress string, logger *logger.Logger) Handler {
+func NewUploadImageHandler(postsClientAddress string, logger *logger.Logger, tracer *opentracing.Tracer) Handler {
 	return &UploadImageHandler{
 		postsClientAddress: postsClientAddress,
 		logger:             logger,
+		tracer:             tracer,
 	}
 }
 
 func (handler *UploadImageHandler) UploadImage(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	fmt.Println("File Upload Endpoint Hit")
+	span := tracer.StartSpanFromRequest("UploadImage", *handler.tracer, r)
+	defer span.Finish()
+
+	span.LogFields(
+		tracer.LogString("handler", fmt.Sprintf("handling post create at %s\n", r.URL.Path)),
+	)
+
+	ctx := tracer.ContextWithSpan(context.Background(), span)
+
 	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		return
@@ -51,7 +63,7 @@ func (handler *UploadImageHandler) UploadImage(w http.ResponseWriter, r *http.Re
 		fmt.Println(err)
 	}
 	postsClient := services.NewPostsClient(handler.postsClientAddress)
-	resp, _ := postsClient.UploadImage(context.TODO(), &postGw.ImageRequest{Image: fileBytes})
+	resp, _ := postsClient.UploadImage(ctx, &postGw.ImageRequest{Image: fileBytes})
 	response, _ := json.Marshal(resp.ImagePath)
 
 	handler.logger.InfoMessage("FU")
