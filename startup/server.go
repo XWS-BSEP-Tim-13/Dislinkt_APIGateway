@@ -146,9 +146,9 @@ func (server *Server) initForgotPasswordHandler(logger *logger.Logger) {
 }
 
 func (server *Server) initHomepageFeedHandler(logger *logger.Logger) {
-	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	forgotPasswordHandler := api.NewHomepageFeedHandler(userEndpoint, postEndpoint, logger)
+	forgotPasswordHandler := api.NewHomepageFeedHandler(connectionEndpoint, postEndpoint, logger)
 	forgotPasswordHandler.Init(server.mux)
 }
 
