@@ -18,7 +18,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
 	"log"
 	"net"
@@ -86,12 +86,12 @@ func tracingWrapper(h http.Handler) http.Handler {
 }
 
 func (server *Server) initHandlers() {
-	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
-	authCreds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
+	//authCreds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
 	optsAuth := []grpc.DialOption{
-		grpc.WithTransportCredentials(authCreds),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
 				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
@@ -104,33 +104,33 @@ func (server *Server) initHandlers() {
 	}
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
-	optsCompany := []grpc.DialOption{grpc.WithTransportCredentials(companyCreds)}
-	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, optsCompany)
+	//companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
+	//optsCompany := []grpc.DialOption{grpc.WithTransportCredentials(companyCreds)}
+	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
-	connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
-	optsConnection := []grpc.DialOption{grpc.WithTransportCredentials(connectionCreds)}
-	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, optsConnection)
+	//connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
+	//optsConnection := []grpc.DialOption{grpc.WithTransportCredentials(connectionCreds)}
+	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
-	optsPost := []grpc.DialOption{grpc.WithTransportCredentials(postCreds)}
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, optsPost)
+	//postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
+	//optsPost := []grpc.DialOption{grpc.WithTransportCredentials(postCreds)}
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
-	optsUser := []grpc.DialOption{grpc.WithTransportCredentials(userCreds)}
-	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, optsUser)
+	//userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
+	//optsUser := []grpc.DialOption{grpc.WithTransportCredentials(userCreds)}
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
