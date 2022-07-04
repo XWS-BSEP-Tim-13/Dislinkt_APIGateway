@@ -105,7 +105,14 @@ func (server *Server) initHandlers() {
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
-	optsCompany := []grpc.DialOption{grpc.WithTransportCredentials(companyCreds)}
+	optsCompany := []grpc.DialOption{
+		grpc.WithTransportCredentials(companyCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
 	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, optsCompany)
 	if err != nil {
 		panic(err)
@@ -113,7 +120,14 @@ func (server *Server) initHandlers() {
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
 	connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
-	optsConnection := []grpc.DialOption{grpc.WithTransportCredentials(connectionCreds)}
+	optsConnection := []grpc.DialOption{
+		grpc.WithTransportCredentials(connectionCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
 	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, optsConnection)
 	if err != nil {
 		panic(err)
@@ -121,7 +135,14 @@ func (server *Server) initHandlers() {
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
-	optsPost := []grpc.DialOption{grpc.WithTransportCredentials(postCreds)}
+	optsPost := []grpc.DialOption{
+		grpc.WithTransportCredentials(postCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, optsPost)
 	if err != nil {
 		panic(err)
@@ -129,7 +150,14 @@ func (server *Server) initHandlers() {
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
-	optsUser := []grpc.DialOption{grpc.WithTransportCredentials(userCreds)}
+	optsUser := []grpc.DialOption{
+		grpc.WithTransportCredentials(userCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
 	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, optsUser)
 	if err != nil {
 		panic(err)
