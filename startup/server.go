@@ -13,8 +13,10 @@ import (
 	connectionGw "github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"io"
@@ -62,12 +64,40 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	return server
 }
 
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
+func tracingWrapper(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		parentSpanContext, err := opentracing.GlobalTracer().Extract(
+			opentracing.HTTPHeaders,
+			opentracing.HTTPHeadersCarrier(r.Header))
+		if err == nil || err == opentracing.ErrSpanContextNotFound {
+			serverSpan := opentracing.GlobalTracer().StartSpan(
+				"ServeHTTP",
+				// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+				ext.RPCServerOption(parentSpanContext),
+				grpcGatewayTag,
+			)
+			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+			defer serverSpan.Finish()
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
 func (server *Server) initHandlers() {
 	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	authCreds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
-	optsAuth := []grpc.DialOption{grpc.WithTransportCredentials(authCreds)}
+	optsAuth := []grpc.DialOption{
+		grpc.WithTransportCredentials(authCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
 	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, optsAuth)
 	if err != nil {
 		panic(err)
@@ -168,7 +198,7 @@ func (server *Server) Start(logger *logger.Logger) {
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux, logger), gatewayCertFile, gatewayKeyFile))
+	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(tracingWrapper(server.mux), logger), gatewayCertFile, gatewayKeyFile))
 }
 
 func (server *Server) GetTracer() opentracing.Tracer {
