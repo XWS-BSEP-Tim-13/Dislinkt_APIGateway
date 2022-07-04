@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	dom "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/domain"
+	events "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/create_post"
 	pb "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	"io"
 	"net/http"
@@ -23,6 +24,16 @@ func decodePostDtoBody(r io.Reader) (*dom.PostDto, error) {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	var rt dom.PostDto
+	if err := dec.Decode(&rt); err != nil {
+		return nil, err
+	}
+	return &rt, nil
+}
+
+func decodeCreatePostBody(r io.Reader) (*events.PostFront, error) {
+	dec := json.NewDecoder(r)
+	dec.DisallowUnknownFields()
+	var rt events.PostFront
 	if err := dec.Decode(&rt); err != nil {
 		return nil, err
 	}

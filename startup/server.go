@@ -3,9 +3,12 @@ package startup
 import (
 	"context"
 	"fmt"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/application"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/api"
 	mw "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/infrastructure/middleware"
 	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
+	saga "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging/nats"
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
@@ -33,6 +36,7 @@ const (
 	connectionCertFile = "cert/connection-cert.pem"
 	postCertFile       = "cert/post-cert.pem"
 	userCertFile       = "cert/user-cert.pem"
+	QueueGroup         = "create_post_service"
 )
 
 func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
@@ -42,8 +46,12 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	}
 	server.initHandlers()
 	server.initRegistrationHandler(logger)
+	commandPublisher := server.initPublisher(server.config.CreatePostCommandSubject)
+	replySubscriber := server.initSubscriber(server.config.CreatePostReplySubject, QueueGroup)
+	createPostOrchestrator := server.initCreatePostOrchestrator(commandPublisher, replySubscriber)
 	server.initAccountActivationHandler(logger)
 	server.initUserPostsHandler(logger)
+	server.initCreatePostApiHandler(logger, createPostOrchestrator)
 	server.initHomepageFeedHandler(logger)
 	server.initUploadImageHandler(logger)
 	server.initForgotPasswordHandler(logger)
@@ -150,6 +158,46 @@ func (server *Server) initHomepageFeedHandler(logger *logger.Logger) {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	forgotPasswordHandler := api.NewHomepageFeedHandler(connectionEndpoint, postEndpoint, logger)
 	forgotPasswordHandler.Init(server.mux)
+}
+
+func (server *Server) initCreatePostApiHandler(logger *logger.Logger, orchestrator *application.CreateOrderOrchestrator) {
+	forgotPasswordHandler := api.NewCreatePostHandler(logger, orchestrator)
+	forgotPasswordHandler.Init(server.mux)
+}
+
+func (server *Server) initCreatePostHandler(publisher saga.Publisher, subscriber saga.Subscriber) {
+	_, err := application.NewCreatePostCommandHandler(publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
+}
+
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
+func (server *Server) initCreatePostOrchestrator(publisher saga.Publisher, subscriber saga.Subscriber) *application.CreateOrderOrchestrator {
+	orchestrator, err := application.NewCreatePostOrchestrator(publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return orchestrator
 }
 
 func (server *Server) Start(logger *logger.Logger) {

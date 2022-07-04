@@ -8,6 +8,11 @@ type PostDto struct {
 	Username string `json:"username"`
 }
 
+type CreatePostDto struct {
+	Content string `json:"content"`
+	Image   string `json:"image"`
+}
+
 type HomepageFeedDto struct {
 	Username string `json:"username"`
 	Page     int    `json:"page"`

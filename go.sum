@@ -79,6 +79,12 @@ github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService v1.1.4 h1:xsYfvz+A6s4ej7o8
 github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService v1.1.4/go.mod h1:p2G0XaW15K2kap30UYsVN8PaklUzLxa8clPSF9EvB2Q=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1 h1:+g1wxmgb6PAlAJvJG+Q7Z6fxjKqNl73LYKss4GPHI6k=
 github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.1/go.mod h1:veoEaUKt9OsntFwVsAQC8Gfv9IjYnnZsiTgxd7s2Ylg=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.2 h1:hdAt7VLMXjKhAfpOv8iuxkQQffTJlWUP7ObFb8hnkgk=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.2/go.mod h1:bpgIgI8ioEIK09tIAQXHRZiSsWm2Pw3f3Dz658obmuA=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.3 h1:HPXa9wgwRMI9WL36PKG7+CBtpafKUKuI/8zXxjInwSo=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.3/go.mod h1:bpgIgI8ioEIK09tIAQXHRZiSsWm2Pw3f3Dz658obmuA=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.4 h1:vUE8VmEsZ0cLue5VC4Z4lhT2CyUcJaQJPae7VXCnmDY=
+github.com/XWS-BSEP-Tim-13/Dislinkt_PostService v0.1.4/go.mod h1:bpgIgI8ioEIK09tIAQXHRZiSsWm2Pw3f3Dz658obmuA=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.2.0 h1:T+7gA5ppBGeyFjLQnEPA1KQoSZAs5/oRIxsz1HrMcLo=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.2.0/go.mod h1:vaqV8uJS4ak13rr1/3voK/nqisz6EFUfQKIigRXygJ4=
 github.com/XWS-BSEP-Tim-13/Dislinkt_UserService v1.2.1 h1:kJRDuOfgj14cIWAyvlTNYIdQG0s2LnZHB1navohBWTo=
