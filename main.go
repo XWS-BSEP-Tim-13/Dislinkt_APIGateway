@@ -12,4 +12,6 @@ func main() {
 	logger := logger.InitLogger("api-gateway", context.TODO())
 	server := startup.NewServer(config, logger)
 	server.Start(logger)
+
+	defer server.CloseTracer()
 }

@@ -10,14 +10,19 @@ import (
 	saga "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging/nats"
 	cfg "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/startup/config"
+	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/tracer"
 	authGw "github.com/XWS-BSEP-Tim-13/Dislinkt_AuthenticationService/infrastructure/grpc/proto"
 	companyGw "github.com/XWS-BSEP-Tim-13/Dislinkt_CompanyService/infrastructure/grpc/proto"
 	connectionGw "github.com/XWS-BSEP-Tim-13/Dislinkt_ConnectionService/infrastructure/grpc/proto"
 	postGw "github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/infrastructure/grpc/proto"
 	userGw "github.com/XWS-BSEP-Tim-13/Dislinkt_UserService/infrastructure/grpc/proto"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -26,6 +31,8 @@ import (
 type Server struct {
 	config *cfg.Config
 	mux    *runtime.ServeMux
+	tracer opentracing.Tracer
+	closer io.Closer
 }
 
 const (
@@ -40,9 +47,14 @@ const (
 )
 
 func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
+	tracer, closer := tracer.Init()
+	opentracing.SetGlobalTracer(tracer)
+
 	server := &Server{
 		config: config,
 		mux:    runtime.NewServeMux(),
+		tracer: tracer,
+		closer: closer,
 	}
 	server.initHandlers()
 	server.initRegistrationHandler(logger)
@@ -60,45 +72,73 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	return server
 }
 
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
+func tracingWrapper(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		parentSpanContext, err := opentracing.GlobalTracer().Extract(
+			opentracing.HTTPHeaders,
+			opentracing.HTTPHeadersCarrier(r.Header))
+		if err == nil || err == opentracing.ErrSpanContextNotFound {
+			serverSpan := opentracing.GlobalTracer().StartSpan(
+				"ServeHTTP",
+				// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+				ext.RPCServerOption(parentSpanContext),
+				grpcGatewayTag,
+			)
+			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+			defer serverSpan.Finish()
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
 func (server *Server) initHandlers() {
 	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
-	auth_creds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
-	opts_auth := []grpc.DialOption{grpc.WithTransportCredentials(auth_creds)}
-	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts_auth)
+	authCreds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
+	optsAuth := []grpc.DialOption{
+		grpc.WithTransportCredentials(authCreds),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
+	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, optsAuth)
 	if err != nil {
 		panic(err)
 	}
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	company_creds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
-	opts_company := []grpc.DialOption{grpc.WithTransportCredentials(company_creds)}
-	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts_company)
+	companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
+	optsCompany := []grpc.DialOption{grpc.WithTransportCredentials(companyCreds)}
+	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, optsCompany)
 	if err != nil {
 		panic(err)
 	}
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
-	connection_creds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
-	opts_connection := []grpc.DialOption{grpc.WithTransportCredentials(connection_creds)}
-	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts_connection)
+	connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
+	optsConnection := []grpc.DialOption{grpc.WithTransportCredentials(connectionCreds)}
+	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, optsConnection)
 	if err != nil {
 		panic(err)
 	}
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	post_creds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
-	opts_post := []grpc.DialOption{grpc.WithTransportCredentials(post_creds)}
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts_post)
+	postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
+	optsPost := []grpc.DialOption{grpc.WithTransportCredentials(postCreds)}
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, optsPost)
 	if err != nil {
 		panic(err)
 	}
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	user_creds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
-	opts_user := []grpc.DialOption{grpc.WithTransportCredentials(user_creds)}
-	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts_user)
+	userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
+	optsUser := []grpc.DialOption{grpc.WithTransportCredentials(userCreds)}
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, optsUser)
 	if err != nil {
 		panic(err)
 	}
@@ -108,14 +148,14 @@ func (server *Server) initRegistrationHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint, logger)
+	registrationHandler := api.NewRegistrationHandler(authEndpoint, userEndpoint, companyEndpoint, logger, &server.tracer)
 	registrationHandler.Init(server.mux)
 }
 
 func (server *Server) initReceiveJobOfferHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint, logger)
+	receive := api.NewReceiveJobOfferHandler(authEndpoint, companyEndpoint, logger, &server.tracer)
 	receive.Init(server.mux)
 }
 
@@ -123,40 +163,40 @@ func (server *Server) initAccountActivationHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
-	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint, logger)
+	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint, logger, &server.tracer)
 	accountActivationHandler.Init(server.mux)
 }
 
 func (server *Server) initUploadImageHandler(logger *logger.Logger) {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	uploadImageHandler := api.NewUploadImageHandler(postEndpoint, logger)
+	uploadImageHandler := api.NewUploadImageHandler(postEndpoint, logger, &server.tracer)
 	uploadImageHandler.Init(server.mux)
 }
 
 func (server *Server) initUserPostsHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint, logger)
+	userPostsHandler := api.NewUsersPostsHandler(userEndpoint, postEndpoint, logger, &server.tracer)
 	userPostsHandler.Init(server.mux)
 }
 
 func (server *Server) initChangePasswordPageHandler(logger *logger.Logger) {
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	changePasswordPage := api.NewChangePasswordPageHandlerHandler(authEndpoint, logger)
+	changePasswordPage := api.NewChangePasswordPageHandlerHandler(authEndpoint, logger, &server.tracer)
 	changePasswordPage.Init(server.mux)
 }
 
 func (server *Server) initForgotPasswordHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	forgotPasswordHandler := api.NewForgotPasswordHandler(userEndpoint, authEndpoint, logger)
+	forgotPasswordHandler := api.NewForgotPasswordHandler(userEndpoint, authEndpoint, logger, &server.tracer)
 	forgotPasswordHandler.Init(server.mux)
 }
 
 func (server *Server) initHomepageFeedHandler(logger *logger.Logger) {
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	forgotPasswordHandler := api.NewHomepageFeedHandler(connectionEndpoint, postEndpoint, logger)
+	forgotPasswordHandler := api.NewHomepageFeedHandler(connectionEndpoint, postEndpoint, logger, &server.tracer)
 	forgotPasswordHandler.Init(server.mux)
 }
 
@@ -206,5 +246,17 @@ func (server *Server) Start(logger *logger.Logger) {
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(server.mux, logger), gatewayCertFile, gatewayKeyFile))
+	log.Fatal(http.ServeTLS(listener, mw.AuthMiddleware(tracingWrapper(server.mux), logger), gatewayCertFile, gatewayKeyFile))
+}
+
+func (server *Server) GetTracer() opentracing.Tracer {
+	return server.tracer
+}
+
+func (server *Server) GetCloser() io.Closer {
+	return server.closer
+}
+
+func (server *Server) CloseTracer() error {
+	return server.closer.Close()
 }
