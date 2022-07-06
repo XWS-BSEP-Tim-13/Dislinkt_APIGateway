@@ -94,7 +94,7 @@ func tracingWrapper(h http.Handler) http.Handler {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	authEndpoint := fmt.Sprintf("%s:%s", "auth_service", "8000")
 	//authCreds, _ := credentials.NewClientTLSFromFile(authCertFile, "")
@@ -113,32 +113,56 @@ func (server *Server) initHandlers() {
 
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	//companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
-	//optsCompany := []grpc.DialOption{grpc.WithTransportCredentials(companyCreds)}
-	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, opts)
+	optsCompany := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
+	err = companyGw.RegisterCompanyServiceHandlerFromEndpoint(context.TODO(), server.mux, companyEndpoint, optsCompany)
 	if err != nil {
 		panic(err)
 	}
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
 	//connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
-	//optsConnection := []grpc.DialOption{grpc.WithTransportCredentials(connectionCreds)}
-	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	optsConnection := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
+	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, optsConnection)
 	if err != nil {
 		panic(err)
 	}
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	//postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
-	//optsPost := []grpc.DialOption{grpc.WithTransportCredentials(postCreds)}
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
+	optsPost := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, optsPost)
 	if err != nil {
 		panic(err)
 	}
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	//userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
-	//optsUser := []grpc.DialOption{grpc.WithTransportCredentials(userCreds)}
-	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	optsUser := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+			),
+		),
+	}
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, optsUser)
 	if err != nil {
 		panic(err)
 	}
