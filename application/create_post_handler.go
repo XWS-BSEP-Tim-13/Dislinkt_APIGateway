@@ -30,7 +30,7 @@ func NewCreatePostCommandHandler(publisher saga.Publisher, subscriber saga.Subsc
 
 func (handler *CreatePostCommandHandler) handle(command *events.SavePostCommand) {
 	reply := events.SavePostReply{Dto: command.Dto}
-
+	fmt.Println("Orch started")
 	switch command.Type {
 	case events.SavePost:
 		postsEndpoint := fmt.Sprintf("%s:%s", "post_service", "8000")
@@ -38,6 +38,7 @@ func (handler *CreatePostCommandHandler) handle(command *events.SavePostCommand)
 		dto := mapDtoToPostPb(&command.Dto.Dto)
 		_, err := postsClient.CreatePost(context.TODO(), &postGw.NewPostRequest{Post: dto})
 		if err != nil {
+			fmt.Println(err, "create post error")
 			return
 		}
 		reply.Type = events.SavePostFinished
@@ -51,6 +52,7 @@ func (handler *CreatePostCommandHandler) handle(command *events.SavePostCommand)
 		}
 		_, err := userClient.CreateNotification(context.TODO(), &userGw.NotificationRequest{Notification: notification})
 		if err != nil {
+			fmt.Println(err, "create notification error")
 			return
 		}
 		reply.Type = events.SaveNotificationsFinished

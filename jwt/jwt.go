@@ -9,7 +9,7 @@ import (
 var SigningKey = []byte("123456")
 
 type CustomClaims struct {
-	username string `json:"username"`
+	Username string `json:"username"`
 	Role     string `json:"role"`
 	jwtgo.StandardClaims
 }

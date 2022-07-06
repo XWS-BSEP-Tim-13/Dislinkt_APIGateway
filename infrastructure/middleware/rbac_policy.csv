@@ -94,6 +94,7 @@ p, ANONYMOUS, /post, GET
 p, USER, /post/*, *
 p, ADMIN, /post/*, *
 p, ANONYMOUS, /post/*, GET
+p, USER, /create-post, POST
 
 p, USER, /post/user/*, *
 p, ADMIN, /post/user/*, *

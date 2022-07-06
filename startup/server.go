@@ -58,9 +58,15 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	}
 	server.initHandlers()
 	server.initRegistrationHandler(logger)
+
 	commandPublisher := server.initPublisher(server.config.CreatePostCommandSubject)
 	replySubscriber := server.initSubscriber(server.config.CreatePostReplySubject, QueueGroup)
 	createPostOrchestrator := server.initCreatePostOrchestrator(commandPublisher, replySubscriber)
+
+	commandSubscriber := server.initSubscriber(server.config.CreatePostCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.CreatePostReplySubject)
+	server.initCreatePostHandler(replyPublisher, commandSubscriber)
+	
 	server.initAccountActivationHandler(logger)
 	server.initUserPostsHandler(logger)
 	server.initCreatePostApiHandler(logger, createPostOrchestrator)

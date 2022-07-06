@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	events "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/create_post"
 	saga "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/saga/messaging"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,10 +27,11 @@ func NewCreatePostOrchestrator(publisher saga.Publisher, subscriber saga.Subscri
 
 func (o *CreateOrderOrchestrator) Start(order *events.PostFront, username string) error {
 	PostDto := events.PostDto{
-		Id:      primitive.NewObjectID(),
-		Image:   order.Image,
-		Content: order.Image,
-		Date:    time.Now(),
+		Id:       primitive.NewObjectID(),
+		Image:    order.Image,
+		Content:  order.Content,
+		Date:     time.Now(),
+		Username: username,
 	}
 	UserPost := events.UserPost{
 		Dto:      PostDto,
@@ -39,6 +41,7 @@ func (o *CreateOrderOrchestrator) Start(order *events.PostFront, username string
 		Type: events.SavePost,
 		Dto:  UserPost,
 	}
+	fmt.Println(UserPost)
 	return o.commandPublisher.Publish(event)
 }
 

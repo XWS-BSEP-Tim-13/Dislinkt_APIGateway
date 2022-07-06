@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/application"
 	logger "github.com/XWS-BSEP-Tim-13/Dislinkt_APIGateway/logging"
-	"github.com/XWS-BSEP-Tim-13/Dislinkt_PostService/jwt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"mime"
 	"net/http"
@@ -19,7 +18,7 @@ type CreatePostHandler struct {
 }
 
 func (handler *CreatePostHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("POST", "/forgot-password/{email}", handler.CreatePost)
+	err := mux.HandlePath("POST", "/create-post", handler.CreatePost)
 	if err != nil {
 		panic(err)
 	}
@@ -45,17 +44,13 @@ func (handler *CreatePostHandler) CreatePost(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	postDto, err := decodeCreatePostBody(r.Body)
+	fmt.Println(postDto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	_, claims, err := jwt.ParseJwt(r.Header.Get("Authorization"))
-	if err != nil {
-		handler.logger.ErrorMessage("Action: PJWTC")
-		fmt.Println("Parse claims error")
-		return
-	}
-	err = handler.orchestrator.Start(postDto, claims.Username)
+	fmt.Println(r.Header.Get("username"))
+	err = handler.orchestrator.Start(postDto, r.Header.Get("username"))
 	if err != nil {
 		fmt.Println("Bad request jwt")
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -6,10 +6,11 @@ import (
 )
 
 type PostDto struct {
-	Id      primitive.ObjectID
-	Content string
-	Image   string
-	Date    time.Time
+	Id       primitive.ObjectID
+	Content  string
+	Image    string
+	Date     time.Time
+	Username string
 }
 
 type PostFront struct {
