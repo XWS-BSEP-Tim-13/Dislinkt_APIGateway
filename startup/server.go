@@ -114,6 +114,7 @@ func (server *Server) initHandlers() {
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	//companyCreds, _ := credentials.NewClientTLSFromFile(companyCertFile, "")
 	optsCompany := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
 				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
@@ -128,6 +129,7 @@ func (server *Server) initHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
 	//connectionCreds, _ := credentials.NewClientTLSFromFile(connectionCertFile, "")
 	optsConnection := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
 				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
@@ -142,6 +144,7 @@ func (server *Server) initHandlers() {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	//postCreds, _ := credentials.NewClientTLSFromFile(postCertFile, "")
 	optsPost := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
 				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
@@ -156,6 +159,7 @@ func (server *Server) initHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	//userCreds, _ := credentials.NewClientTLSFromFile(userCertFile, "")
 	optsUser := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
 				grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
