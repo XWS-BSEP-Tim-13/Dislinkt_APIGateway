@@ -78,10 +78,11 @@ func (handler *CreatePostCommandHandler) handle(command *events.SavePostCommand)
 
 func mapDtoToPostPb(dto *events.PostDto) *postGw.PostDto {
 	post := &postGw.PostDto{
-		Image:   dto.Image,
-		Content: dto.Content,
-		Date:    timestamppb.New(dto.Date),
-		Id:      dto.Id.Hex(),
+		Image:    dto.Image,
+		Content:  dto.Content,
+		Date:     timestamppb.New(dto.Date),
+		Id:       dto.Id.Hex(),
+		Username: dto.Username,
 	}
 	return post
 }

@@ -66,11 +66,12 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	commandSubscriber := server.initSubscriber(server.config.CreatePostCommandSubject, QueueGroup)
 	replyPublisher := server.initPublisher(server.config.CreatePostReplySubject)
 	server.initCreatePostHandler(replyPublisher, commandSubscriber)
-	
+
 	server.initAccountActivationHandler(logger)
 	server.initUserPostsHandler(logger)
 	server.initCreatePostApiHandler(logger, createPostOrchestrator)
 	server.initHomepageFeedHandler(logger)
+	server.initMessageSendHandler(logger)
 	server.initUploadImageHandler(logger)
 	server.initForgotPasswordHandler(logger)
 	server.initChangePasswordPageHandler(logger)
@@ -198,6 +199,13 @@ func (server *Server) initAccountActivationHandler(logger *logger.Logger) {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	companyEndpoint := fmt.Sprintf("%s:%s", "company_service", "8000")
 	accountActivationHandler := api.NewAccountActivationHandler(authEndpoint, userEndpoint, companyEndpoint, logger, &server.tracer)
+	accountActivationHandler.Init(server.mux)
+}
+
+func (server *Server) initMessageSendHandler(logger *logger.Logger) {
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	accountActivationHandler := api.NewSendMessageHandler(postEndpoint, userEndpoint, logger, &server.tracer)
 	accountActivationHandler.Init(server.mux)
 }
 

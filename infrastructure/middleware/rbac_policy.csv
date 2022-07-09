@@ -51,6 +51,8 @@ p, USER, /user/education, PUT
 p, USER, /user/skill, PUT
 p, USER, /user/interest, PUT
 p, USER, /user/notifications, GET
+p, USER, /user/notifications/*, PUT
+
 p, USER, /user/account-privacy/*, PUT
 p, USER, /conn/user/users-connected/*, GET
 p, USER, /conn/user/block/*, PUT
@@ -90,6 +92,12 @@ p, ANONYMOUS, /user/feed/*, GET
 p, USER, /post, *
 p, ADMIN, /post, *
 p, ANONYMOUS, /post, GET
+
+p, USER, /message/*, GET
+p, USER, /message, POST
+p, USER, /message, GET
+p, USER, /message, POST
+
 
 p, USER, /post/*, *
 p, ADMIN, /post/*, *

@@ -23,6 +23,12 @@ type JobOfferTokenDto struct {
 	Token    string      `json:"token"`
 }
 
+type MessageDto struct {
+	MessageFrom string `bson:"message_from"`
+	MessageTo   string `bson:"message_to"`
+	Content     string `bson:"content"`
+}
+
 type JobOfferDto struct {
 	Position       string              `bson:"position"`
 	JobDescription string              `bson:"job_description"`
