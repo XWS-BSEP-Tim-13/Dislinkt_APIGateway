@@ -142,3 +142,6 @@ p, USER, /conn/*, *
 
 p, USER, /post/events, *
 p, ADMIN, /post/events, *
+
+p, USER, /events, *
+p, ADMIN, /events, *
