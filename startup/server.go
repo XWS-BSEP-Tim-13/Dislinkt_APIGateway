@@ -76,6 +76,7 @@ func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	server.initForgotPasswordHandler(logger)
 	server.initChangePasswordPageHandler(logger)
 	server.initReceiveJobOfferHandler(logger)
+	server.initEventsHandler(logger)
 	return server
 }
 
@@ -252,6 +253,13 @@ func (server *Server) initCreatePostHandler(publisher saga.Publisher, subscriber
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (server *Server) initEventsHandler(logger *logger.Logger) {
+	connectionEndpoint := fmt.Sprintf("%s:%s", "connection_service", "8000")
+	postEndpoint := fmt.Sprintf("%s:%s", "post_service", "8000")
+	receive := api.NewEventsHandler(connectionEndpoint, postEndpoint, logger, &server.tracer)
+	receive.Init(server.mux)
 }
 
 func (server *Server) initPublisher(subject string) saga.Publisher {
