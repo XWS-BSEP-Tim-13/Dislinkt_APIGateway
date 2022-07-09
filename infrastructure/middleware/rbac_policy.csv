@@ -137,3 +137,8 @@ p, USER, /passwordless-login, POST
 p, ADMIN, /passwordless-login, POST
 p, ANONYMOUS, /passwordless-login, POST
 p, COMPANY, /passwordless-login, POST
+
+p, USER, /conn/*, *
+
+p, USER, /post/events, *
+p, ADMIN, /post/events, *
