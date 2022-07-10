@@ -20,8 +20,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"io"
 	"log"
 	"net"
@@ -46,13 +49,29 @@ const (
 	QueueGroup         = "create_post_service"
 )
 
+var (
+	requestNum = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "request_number_total",
+			Help: "Total number of HTTP requests.",
+		},
+		[]string{"metric_type"},
+	)
+)
+
 func NewServer(config *cfg.Config, logger *logger.Logger) *Server {
 	tracer, closer := tracer.Init()
 	opentracing.SetGlobalTracer(tracer)
 
+	prometheus.MustRegister(requestNum)
+
 	server := &Server{
 		config: config,
-		mux:    runtime.NewServeMux(),
+		mux: runtime.NewServeMux(
+			runtime.WithMetadata(func(c context.Context, req *http.Request) metadata.MD {
+				requestNum.WithLabelValues("total_number_of_requests").Inc()
+				return metadata.Pairs("x-forwarded-method", req.Method)
+			})),
 		tracer: tracer,
 		closer: closer,
 	}
@@ -292,6 +311,9 @@ func (server *Server) initCreatePostOrchestrator(publisher saga.Publisher, subsc
 
 func (server *Server) Start(logger *logger.Logger) {
 	address := fmt.Sprintf(":%s", server.config.Port)
+
+	http.Handle("/metrics", promhttp.Handler())
+
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
