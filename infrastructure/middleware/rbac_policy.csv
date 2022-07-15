@@ -1,0 +1,155 @@
+p, ADMIN, /user/*, *
+p, USER, /user/*, *
+p, ANONYMOUS, /user/*, GET
+
+p, ADMIN, /in/*, *
+p, USER, /in/*, *
+p, ANONYMOUS, /in/*, GET
+
+p, ANONYMOUS, /forgot-password/*, POST
+p, ANONYMOUS, /change-password, PUT
+p, ANONYMOUS, /change-password/*, GET
+
+p, ADMIN, /send-token, GET
+p, USER, /send-token, GET
+p, COMPANY, /send-token, GET
+
+p, ADMIN, /generate-qrcode, GET
+p, USER, /generate-qrcode, GET
+p, COMPANY, /generate-qrcode, GET
+
+p, ANONYMOUS, /mfa-login/*, GET
+
+p, ADMIN, /mfa/*, GET
+p, USER, /mfa/*, GET
+p, COMPANY, /mfa/*, GET
+
+p, ADMIN, /user, GET
+
+p, ADMIN, /mfa/check, GET
+p, USER, /mfa/check, GET
+p, ANONYMOUS, /mfa/check, GET
+
+p, ADMIN, /mfa/reset, PUT
+p, USER, /mfa/reset, PUT
+p, ANONYMOUS, /mfa/reset, PUT
+
+p, ADMIN, /user/filter/*, *
+p, USER, /user/filter/*, *
+p, ANONYMOUS, /user/filter/*, GET
+
+p, ADMIN, /user/check-read-posts, POST
+p, USER, /user/check-read-posts, POST
+
+p, USER, /connection-request, POST
+p, USER, /connection-request/by-user/*, *
+p, USER, /connection-request/accept/*, *
+p, USER, /user/*, PUT
+
+p, USER, /user/experience, PUT
+p, USER, /user/education, PUT
+p, USER, /user/skill, PUT
+p, USER, /user/interest, PUT
+p, USER, /user/notifications, GET
+p, USER, /user/notifications/*, PUT
+
+p, USER, /user/account-privacy/*, PUT
+p, USER, /conn/user/users-connected/*, GET
+p, USER, /conn/user/block/*, PUT
+p, USER, /conn/user/unblock/*, PUT
+p, USER, /conn/user/block/*, GET
+p, USER, /user/experience/delete, PUT
+p, USER, /user/education/delete, PUT
+p, USER, /user/removeSkill, PUT
+p, USER, /user/removeInterest, PUT
+
+p, USER, /connection-request/*, DELETE
+p, USER, /user/delete-connection, PUT
+p, USER, /user/user-connection-usernames/*, GET
+
+p, USER, /conn/connection-request/*, DELETE
+p, USER, /conn/user/delete-connection, PUT
+p, USER, /conn/user/user-connection-usernames/*, GET
+p, USER, /conn/connection-request, POST
+p, USER, /conn/connection-request/by-user/*, *
+p, USER, /conn/connection-request/accept/*, *
+
+p, ANONYMOUS, /conn/connection-request/*, DELETE
+p, ANONYMOUS, /conn/user/delete-connection, PUT
+p, ANONYMOUS, /conn/user/user-connection-usernames/*, GET
+p, ANONYMOUS, /conn/connection-request, POST
+p, ANONYMOUS, /conn/connection-request/by-user/*, *
+p, ANONYMOUS, /conn/connection-request/accept/*, *
+
+p, ANONYMOUS, /user/feed, *
+p, ADMIN, /user/feed, *
+p, USER, /user/feed, *
+p, ADMIN, /user/get-posts, *
+
+p, USER, /user/feed/*, GET
+p, ANONYMOUS, /user/feed/*, GET
+
+p, USER, /post, *
+p, ADMIN, /post, *
+p, ANONYMOUS, /post, GET
+
+p, USER, /message/*, GET
+p, USER, /message, POST
+p, USER, /message, GET
+p, USER, /message, POST
+
+
+p, USER, /post/*, *
+p, ADMIN, /post/*, *
+p, ANONYMOUS, /post/*, GET
+p, USER, /create-post, POST
+
+p, USER, /post/user/*, *
+p, ADMIN, /post/user/*, *
+p, ANONYMOUS, /post/user/*, GET
+p, ANONYMOUS, /post/image/*, GET
+
+p, USER, /post/react, POST
+
+p, USER, /post/*/feed, *
+p, ADMIN, /post/*/feed, *
+p, ANONYMOUS, /post/*/feed, POST
+
+p, USER, /post/*/comment, POST
+p, USER, /post/upload-image, POST
+
+p, ADMIN, /company, GET
+p, USER, /company, GET
+p, ANONYMOUS, /company, GET
+p, COMPANY, /company, *
+
+p, ADMIN, /company/*, GET
+p, USER, /company/*, GET
+p, ANONYMOUS, /company/*, GET
+p, COMPANY, /company/*, *
+
+
+p, COMPANY, /company/job-offer, POST
+p, USER, /company/job-offer, POST
+p, COMPANY, /company/job-offer, GET
+p, USER, /company/job-offer, GET
+p, COMPANY, /company/job-offer/filter, POST
+p, USER, /company/job-offer/filter, POST
+
+p, USER, /generate-code, POST
+p, ADMIN, /generate-code, POST
+p, ANONYMOUS, /generate-code, POST
+p, COMPANY, /generate-code, POST
+
+p, USER, /passwordless-login, POST
+p, ADMIN, /passwordless-login, POST
+p, ANONYMOUS, /passwordless-login, POST
+p, COMPANY, /passwordless-login, POST
+
+p, USER, /conn/*, *
+
+p, USER, /post/events, *
+p, ADMIN, /post/events, *
+
+p, USER, /events, *
+p, ADMIN, /events, *
